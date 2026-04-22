@@ -1,0 +1,51 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@layer base {
+    :root {
+        --pln-blue: #005b9f;
+        --pln-yellow: #ffd100;
+        --pln-light-blue: #e8f0fe;
+        --pln-gray: #f5f5f5;
+        --pln-success: #28a745;
+        --pln-danger: #dc3545;
+        --pln-warning: #ffc107;
+    }
+}
+
+@layer components {
+    .btn-pln-primary {
+        @apply bg-[--pln-blue] text-white px-6 py-3 rounded-lg font-semibold 
+               hover:bg-[#004080] transition-all duration-300 
+               active:transform active:scale-95;
+    }
+
+    .btn-pln-secondary {
+        @apply bg-white text-[--pln-blue] border-2 border-[--pln-blue] 
+               px-6 py-3 rounded-lg font-semibold hover:bg-[--pln-light-blue] 
+               transition-all duration-300;
+    }
+
+    .card-pln {
+        @apply bg-white rounded-xl p-4 shadow-md border border-gray-100;
+    }
+
+    .input-pln {
+        @apply w-full px-4 py-3 border-2 border-gray-200 rounded-lg 
+               focus:border-[--pln-blue] focus:ring-2 focus:ring-[--pln-light-blue] 
+               transition-all duration-200;
+    }
+
+    .badge-pending {
+        @apply bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium;
+    }
+
+    .badge-approved {
+        @apply bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium;
+    }
+
+    .badge-rejected {
+        @apply bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-medium;
+    }
+}

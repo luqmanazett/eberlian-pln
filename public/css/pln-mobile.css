@@ -1,0 +1,87 @@
+/* Mobile-first styling untuk SIPEL PLN */
+
+body {
+    background: #f5f7fa;
+}
+
+.max-w-lg {
+    max-width: 480px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+}
+
+.bg-white.rounded-xl {
+    border-radius: 16px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+    border: 1px solid #f0f0f0 !important;
+}
+
+input[type="text"],
+input[type="tel"],
+input[type="file"],
+select,
+textarea {
+    border-radius: 12px !important;
+    padding: 14px 16px !important;
+    font-size: 16px !important;
+    border: 1.5px solid #e5e7eb !important;
+    background: white !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #005b9f !important;
+    box-shadow: 0 0 0 3px rgba(0, 91, 159, 0.1) !important;
+    outline: none !important;
+}
+
+/* Buttons */
+button {
+    border-radius: 12px !important;
+    padding: 16px 20px !important;
+    font-weight: 600 !important;
+    font-size: 16px !important;
+}
+
+.bg-pln-blue {
+    background: #005b9f !important;
+}
+
+.bg-green-600 {
+    background: #10b981 !important;
+}
+
+.w-8.h-8.rounded-full {
+    width: 36px !important;
+    height: 36px !important;
+    font-size: 14px !important;
+}
+
+iframe {
+    border-radius: 12px !important;
+    background: white !important;
+}
+
+.fixed.bottom-0 {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(8px) !important;
+}
+
+label {
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    color: #374151 !important;
+    margin-bottom: 6px !important;
+}
+
+.text-red-500 {
+    font-size: 12px !important;
+    margin-top: 4px !important;
+}
+
+.text-green-600 {
+    background: #ecfdf5 !important;
+    padding: 8px 12px !important;
+    border-radius: 8px !important;
+}

@@ -1,0 +1,249 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
+        <title>Signature</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            body {
+                font-family:
+                    "Inter",
+                    -apple-system,
+                    sans-serif;
+                background: #f5f7fa;
+                padding: 8px;
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+            }
+            .container {
+                width: 100%;
+                max-width: 400px;
+                margin: 0 auto;
+            }
+            .canvas-wrapper {
+                background: white;
+                border-radius: 12px;
+                padding: 8px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            }
+            canvas {
+                display: block;
+                width: 100%;
+                height: auto;
+                border-radius: 8px;
+                background: white;
+                cursor: crosshair;
+                touch-action: none;
+                border: 1.5px solid #008080;
+            }
+            .button-group {
+                display: flex;
+                gap: 8px;
+                margin-top: 8px;
+            }
+            .btn {
+                flex: 1;
+                padding: 12px;
+                border: none;
+                border-radius: 8px;
+                font-size: 14px;
+                font-weight: 600;
+                cursor: pointer;
+            }
+            .btn-clear {
+                background: #fee2e2;
+                color: #991b1b;
+            }
+            .btn-save {
+                background: #008080;
+                color: white;
+            }
+            .status {
+                margin-top: 8px;
+                padding: 8px;
+                border-radius: 20px;
+                font-size: 12px;
+                text-align: center;
+                background: #e0f2f2;
+                color: #008080;
+            }
+            .status.success {
+                background: #d1fae5;
+                color: #065f46;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="canvas-wrapper">
+                <canvas id="signatureCanvas" width="400" height="180"></canvas>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-clear" onclick="clearCanvas()">
+                    🗑️ Hapus
+                </button>
+                <button class="btn btn-save" onclick="saveToParent()">
+                    💾 Simpan
+                </button>
+            </div>
+
+            <div id="status" class="status">✏️ Tanda tangan di area atas</div>
+        </div>
+
+        <script>
+            const urlParams = new URLSearchParams(window.location.search);
+            const canvasId = urlParams.get("id") || "1";
+
+            console.log("🎨 Canvas ID:", canvasId);
+
+            const canvas = document.getElementById("signatureCanvas");
+            const ctx = canvas.getContext("2d");
+
+            // Set initial
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.lineWidth = 2.5;
+            ctx.lineCap = "round";
+            ctx.strokeStyle = "#000000";
+
+            let drawing = false;
+
+            function getPosition(e) {
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+
+                let clientX, clientY;
+
+                if (e.touches) {
+                    clientX = e.touches[0].clientX;
+                    clientY = e.touches[0].clientY;
+                } else {
+                    clientX = e.clientX;
+                    clientY = e.clientY;
+                }
+
+                return {
+                    x: Math.max(
+                        0,
+                        Math.min(canvas.width, (clientX - rect.left) * scaleX),
+                    ),
+                    y: Math.max(
+                        0,
+                        Math.min(canvas.height, (clientY - rect.top) * scaleY),
+                    ),
+                };
+            }
+
+            function startDrawing(e) {
+                drawing = true;
+                const pos = getPosition(e);
+                ctx.beginPath();
+                ctx.moveTo(pos.x, pos.y);
+                e.preventDefault();
+            }
+
+            function draw(e) {
+                if (!drawing) return;
+                const pos = getPosition(e);
+                ctx.lineTo(pos.x, pos.y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(pos.x, pos.y);
+                e.preventDefault();
+            }
+
+            function stopDrawing(e) {
+                drawing = false;
+                e.preventDefault();
+            }
+
+            canvas.addEventListener("mousedown", startDrawing);
+            canvas.addEventListener("mousemove", draw);
+            canvas.addEventListener("mouseup", stopDrawing);
+            canvas.addEventListener("mouseleave", stopDrawing);
+
+            canvas.addEventListener("touchstart", startDrawing);
+            canvas.addEventListener("touchmove", draw);
+            canvas.addEventListener("touchend", stopDrawing);
+            canvas.addEventListener("touchcancel", stopDrawing);
+
+            window.clearCanvas = function () {
+                ctx.fillStyle = "#ffffff";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                document.getElementById("status").className = "status";
+                document.getElementById("status").innerHTML = "🗑️ Dihapus";
+            };
+
+            window.saveToParent = function () {
+                const dataUrl = canvas.toDataURL("image/png");
+                const canvasId = urlParams.get("id") || "1";
+
+                // Tentukan target input ID berdasarkan canvasId
+                let targetInput;
+                if (canvasId === "1") {
+                    targetInput = "ttd_ba_lahan_input";
+                } else if (canvasId === "2") {
+                    targetInput = "ttd_ba_lingkungan_input";
+                } else if (canvasId === "ba_lahan_elektronik") {
+                    targetInput = "ttd_ba_lahan_elektronik_input";
+                } else if (canvasId === "ba_lingkungan_elektronik") {
+                    targetInput = "ttd_ba_lingkungan_elektronik_input";
+                } else if (canvasId === "ba_lahan_elektronik_ulang") {
+                    targetInput = "ttd_ba_lahan_elektronik_ulang_input";
+                } else if (canvasId === "ba_lingkungan_elektronik_ulang") {
+                    targetInput = "ttd_ba_lingkungan_elektronik_ulang_input";
+                } else {
+                    targetInput = "ttd_ba_lahan_input";
+                }
+
+                console.log(
+                    "📤 Sending signature to:",
+                    targetInput,
+                    "Length:",
+                    dataUrl.length,
+                );
+
+                // Kirim ke parent window
+                window.parent.postMessage(
+                    {
+                        type: "signature-saved",
+                        inputId: targetInput,
+                        dataUrl: dataUrl,
+                    },
+                    "*",
+                );
+
+                // Direct set
+                try {
+                    const parentInput =
+                        window.parent.document.getElementById(targetInput);
+                    if (parentInput) {
+                        parentInput.value = dataUrl;
+                        parentInput.dispatchEvent(
+                            new Event("input", { bubbles: true }),
+                        );
+                        console.log("✅ Direct set successful");
+                    } else {
+                        console.error("❌ Input not found:", targetInput);
+                    }
+                } catch (e) {
+                    console.log("⚠️ Direct set failed:", e.message);
+                }
+
+                document.getElementById("status").className = "status success";
+                document.getElementById("status").innerHTML = "✅ Tersimpan!";
+            };
+        </script>
+    </body>
+</html>
