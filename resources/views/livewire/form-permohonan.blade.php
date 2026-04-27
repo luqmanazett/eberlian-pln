@@ -78,19 +78,22 @@
             @error('no_telepon') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
         </div>
         
-        {{-- ULP --}}
-        <div class="bg-white rounded-xl p-4 shadow-sm">
-            <label class="block font-medium mb-2">ULP <span class="text-red-500">*</span></label>
-            <select wire:model="ulp" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pln-primary focus:ring-1 focus:ring-pln-primary">
-                <option value="">Pilih ULP</option>
-                <option value="ULP Jakarta Pusat">ULP Jakarta Pusat</option>
-                <option value="ULP Jakarta Barat">ULP Jakarta Barat</option>
-                <option value="ULP Jakarta Selatan">ULP Jakarta Selatan</option>
-                <option value="ULP Jakarta Timur">ULP Jakarta Timur</option>
-                <option value="ULP Jakarta Utara">ULP Jakarta Utara</option>
-            </select>
-            @error('ulp') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
-        </div>
+       {{-- ULP --}}
+<div class="bg-white rounded-xl p-4 shadow-sm">
+    <label class="block font-medium mb-2">ULP <span class="text-red-500">*</span></label>
+    <select wire:model="ulp" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pln-primary focus:ring-1 focus:ring-pln-primary">
+        <option value="">Pilih ULP</option>
+        <option value="ULP Bandung Selatan">ULP Bandung Selatan</option>
+        <option value="ULP Bandung Barat">ULP Bandung Barat</option>
+        <option value="ULP Bandung Utara">ULP Bandung Utara</option>
+        <option value="ULP Bandung Timur">ULP Bandung Timur</option>
+        <option value="ULP Cijawura">ULP Cijawura</option>
+        <option value="ULP Ujungberung">ULP Ujungberung</option>
+        <option value="ULP Kopo">ULP Kopo</option>
+        <option value="ULP Prima Priangan">ULP Prima Priangan</option>
+    </select>
+    @error('ulp') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+</div>
         
         {{-- Alamat Gardu --}}
         <div class="bg-white rounded-xl p-4 shadow-sm">

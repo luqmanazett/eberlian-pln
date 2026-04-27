@@ -4,8 +4,8 @@
 @section('header-title', 'SIPEL PLN')
 
 @section('content')
-{{-- Background Kuning Gradient --}}
-<div style="margin: -16px -16px 0 -16px; padding: 16px 16px 0 16px; background: linear-gradient(to bottom, #FFD100 0%, #FFF8E7 40%, #F5F7FA 100%);">
+{{-- Background Hijau Gradient --}}
+<div style="margin: -16px -16px 0 -16px; padding: 16px 16px 0 16px; background: linear-gradient(to bottom, #059669 0%, #D1FAE5 40%, #F5F7FA 100%);">
     
     {{-- Welcome Card - UJUNG TAJAM (border-radius: 0) --}}
     <div style="background: white; border-radius: 0px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); display: flex; align-items: stretch; overflow: hidden;">
@@ -21,7 +21,7 @@
         </div>
         
         {{-- Ilustrasi PLN - Setinggi Card --}}
-        <div style="display: flex; align-items: center; justify-content: center; background: linear-gradient(to left, #FFF8E7, white); padding: 0 12px;">
+        <div style="display: flex; align-items: center; justify-content: center; background: linear-gradient(to left, #D1FAE5, white); padding: 0 12px;">
             @if(file_exists(public_path('images/pln-illustration.png')))
             <img src="{{ asset('images/pln-illustration.png') }}" alt="PLN" style="height: 80px; width: auto; display: block;">
             @else
@@ -94,7 +94,7 @@
                 <h4 class="font-semibold text-gray-800 text-base">Pasang Baru</h4>
                 <p class="text-sm text-gray-500">Instalasi listrik baru</p>
             </div>
-            <div style="width: 32px; height: 32px; background: #005B9F; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+            <div style="width: 32px; height: 32px; background: #059669; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
                 <span style="color: white; font-size: 22px; font-weight: 300; line-height: 1;">+</span>
             </div>
         </a>
@@ -106,7 +106,7 @@
                 <h4 class="font-semibold text-gray-800 text-base">Tambah Daya</h4>
                 <p class="text-sm text-gray-500">Upgrade kapasitas listrik</p>
             </div>
-            <div style="width: 32px; height: 32px; background: #005B9F; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+            <div style="width: 32px; height: 32px; background: #059669; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
                 <span style="color: white; font-size: 22px; font-weight: 300; line-height: 1;">+</span>
             </div>
         </a>
@@ -118,7 +118,7 @@
                 <h4 class="font-semibold text-gray-800 text-base">Peningkatan Keandalan</h4>
                 <p class="text-sm text-gray-500">Peningkatan sistem kelistrikan</p>
             </div>
-            <div style="width: 32px; height: 32px; background: #005B9F; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+            <div style="width: 32px; height: 32px; background: #059669; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
                 <span style="color: white; font-size: 22px; font-weight: 300; line-height: 1;">+</span>
             </div>
         </a>
@@ -130,13 +130,13 @@
 <div>
     <div class="flex items-center justify-between mb-3">
         <h3 class="font-semibold text-gray-800 text-base">Riwayat Terbaru</h3>
-        <a href="{{ route('user.permohonan.history') }}" class="text-sm font-medium text-pln-primary">Lihat semua →</a>
+        <a href="{{ route('user.permohonan.history') }}" class="text-sm font-medium" style="color: #059669;">Lihat semua →</a>
     </div>
     
     @php
         $recentPermohonans = App\Models\Permohonan::where('user_id', Auth::id())
             ->orderBy('updated_at', 'desc')
-            ->limit(3)  // 👈 UBAH DARI 2 MENJADI 3
+            ->limit(3)
             ->get();
     @endphp
     
@@ -144,7 +144,6 @@
         @forelse($recentPermohonans as $permohonan)
         <a href="{{ route('user.permohonan.show', $permohonan->id) }}" class="card flex items-center justify-between">
             <div>
-                {{-- 👇 NAMA PELANGGAN --}}
                 <p class="font-medium text-gray-800">{{ $permohonan->nama_pelanggan }}</p>
                 <p class="text-sm text-gray-500">
                     @if($permohonan->jenis_permohonan == 'pasang_baru')

@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use App\Models\User;
+use App\Models\Notifikasi;
 
 class FormPermohonan extends Component
 {
@@ -334,6 +336,17 @@ public function updatedBaLingkunganOption($value)
             'user_agent' => request()->userAgent(),
         ]);
         
+        // Notifikasi ke Admin (Permohonan Baru)
+$admins = \App\Models\User::where('role', 'admin')->get();
+foreach ($admins as $admin) {
+    \App\Models\Notifikasi::create([
+        'user_id' => $admin->id,
+        'permohonan_id' => $permohonan->id,
+        'jenis_notifikasi' => 'info',
+        'pesan' => "📋 Permohonan Baru",
+        'alasan' => "{$this->nama_pelanggan} mengajukan permohonan " . ucwords(str_replace('_', ' ', $this->jenis_permohonan)),
+    ]);
+}
         DB::commit();
         $this->reset();
         

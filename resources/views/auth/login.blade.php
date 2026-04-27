@@ -15,9 +15,10 @@
     
     <style>
         :root {
-            --pln-yellow: #FFD100;
-            --pln-yellow-dark: #E6BC00;
-            --pln-blue: #005B9F;
+            --pln-primary: #46C2B3;
+            --pln-primary-dark: #359A8F;
+            --pln-primary-light: #D4F5F0;
+            --pln-danger: #EF4444;
         }
         
         * {
@@ -33,32 +34,18 @@
             position: relative;
         }
         
-        {{-- Background setengah lingkaran (hanya di bagian atas) --}}
+        {{-- Background dari gambar (ZOOM) --}}
         .half-circle-bg {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            height: 280px;
+            height: 300px;
             background-image: url('{{ asset("images/login-bg.png") }}');
-            background-size: cover;
-            background-position: center top;
-            border-bottom-left-radius: 50% 30%;
-            border-bottom-right-radius: 50% 30%;
+            background-size: 120%;
+            background-position: center 30%;
+            background-repeat: no-repeat;
             z-index: 1;
-        }
-        
-        {{-- Overlay kuning transparan --}}
-        .half-circle-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 280px;
-            background: linear-gradient(135deg, rgba(255,209,0,0.5) 0%, rgba(255,209,0,0.2) 100%);
-            border-bottom-left-radius: 50% 30%;
-            border-bottom-right-radius: 50% 30%;
-            z-index: 2;
         }
         
         {{-- Container Utama --}}
@@ -72,7 +59,7 @@
             padding: 16px 16px 20px;
         }
         
-        {{-- Logo & Judul (di atas background setengah lingkaran) --}}
+        {{-- Logo & Judul --}}
         .header-section {
             text-align: center;
             margin-bottom: 16px;
@@ -93,14 +80,16 @@
         .header-section h1 {
             font-size: 26px;
             font-weight: 700;
-            color: #1F2937;
+            color: white;
             margin-bottom: 4px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
         
         .header-section .tagline {
             font-size: 13px;
-            color: #4B5563;
+            color: rgba(255,255,255,0.95);
             line-height: 1.4;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
         }
         
         {{-- Card Form - PUTIH SOLID --}}
@@ -110,13 +99,11 @@
             background: white;
             border-radius: 20px;
             padding: 24px 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            border: 1px solid #F0F0F0;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
             position: relative;
             z-index: 20;
         }
         
-        {{-- Welcome Text - CENTER --}}
         .welcome-text {
             margin-bottom: 20px;
             text-align: center;
@@ -158,13 +145,13 @@
         
         .form-input:focus {
             outline: none;
-            border-color: var(--pln-yellow);
-            box-shadow: 0 0 0 3px rgba(255,209,0,0.15);
+            border-color: var(--pln-primary);
+            box-shadow: 0 0 0 3px rgba(70,194,179,0.15);
         }
         
         .forgot-link a {
             font-size: 12px;
-            color: var(--pln-blue);
+            color: var(--pln-primary);
             text-decoration: none;
             font-weight: 500;
         }
@@ -172,19 +159,19 @@
         .btn-login {
             width: 100%;
             padding: 14px;
-            background: var(--pln-yellow);
+            background: var(--pln-primary);
             border: none;
             border-radius: 10px;
             font-size: 15px;
             font-weight: 600;
-            color: #1F2937;
+            color: white;
             cursor: pointer;
             transition: all 0.2s;
             margin-top: 6px;
         }
         
         .btn-login:hover {
-            background: var(--pln-yellow-dark);
+            background: var(--pln-primary-dark);
         }
         
         .btn-login:active {
@@ -219,7 +206,7 @@
         .remember-me input {
             width: 16px;
             height: 16px;
-            accent-color: var(--pln-yellow);
+            accent-color: var(--pln-primary);
         }
         
         .remember-me label {
@@ -239,10 +226,9 @@
             justify-content: space-between;
         }
         
-        {{-- Footer - LEBIH BAWAH --}}
+        {{-- Footer --}}
         .footer {
-            margin-top: 24px;
-            margin-bottom: 8px;
+            margin-top: 12px;
             position: relative;
             z-index: 20;
         }
@@ -267,21 +253,33 @@
         }
         
         .fallback-logo span {
-            color: var(--pln-blue);
+            color: var(--pln-primary);
             font-size: 28px;
             font-weight: bold;
+        }
+        
+        {{-- Register Link --}}
+        .register-link {
+            text-align: center;
+            margin-top: 16px;
+        }
+        
+        .register-link a {
+            font-size: 13px;
+            color: var(--pln-primary);
+            text-decoration: none;
+            font-weight: 500;
         }
     </style>
 </head>
 <body>
-    {{-- Background setengah lingkaran --}}
+    {{-- Background dari gambar --}}
     <div class="half-circle-bg"></div>
-    <div class="half-circle-overlay"></div>
     
     {{-- Container Utama --}}
     <div class="page-wrapper">
         
-        {{-- Logo & Judul (di atas background) --}}
+        {{-- Logo & Judul --}}
         <div class="header-section">
             @if(file_exists(public_path('images/pln-logo.png')))
             <img src="{{ asset('images/pln-logo.png') }}" alt="PLN">
@@ -301,7 +299,7 @@
         {{-- Card Form Putih --}}
         <div class="login-card">
             
-            {{-- Welcome - CENTER --}}
+            {{-- Welcome --}}
             <div class="welcome-text">
                 <h2>Selamat datang!</h2>
                 <p>Silakan login untuk melanjutkan</p>
@@ -349,13 +347,6 @@
                     Login
                 </button>
             </form>
-            {{-- Register Link --}}
-<div class="text-center mt-4">
-    <p class="text-sm text-gray-600">
-        Belum punya akun? 
-        <a href="{{ route('register') }}" class="text-pln-primary font-medium">Daftar di sini</a>
-    </p>
-</div>
             
             {{-- Session Info --}}
             <div class="session-info">
@@ -364,9 +355,14 @@
             
         </div>
         
-        {{-- Footer - Lebih Bawah --}}
+        {{-- Register Link --}}
+        <div class="register-link">
+            <a href="{{ route('register') }}">Belum punya akun? Daftar di sini</a>
+        </div>
+        
+        {{-- Footer --}}
         <div class="footer">
-            <p>© 2026 Luqman Azet. All rights reserved.</p>
+            <p>© 2026 Luqmanazet. All rights reserved.</p>
         </div>
         
     </div>

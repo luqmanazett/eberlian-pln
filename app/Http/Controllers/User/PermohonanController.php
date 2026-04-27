@@ -194,6 +194,17 @@ class PermohonanController extends Controller
         'ip_address' => request()->ip(),
         'user_agent' => request()->userAgent(),
     ]);
+    // Notifikasi ke Admin (Upload Ulang)
+$admins = \App\Models\User::where('role', 'admin')->get();
+foreach ($admins as $admin) {
+    \App\Models\Notifikasi::create([
+        'user_id' => $admin->id,
+        'permohonan_id' => $permohonan->id,
+        'jenis_notifikasi' => 'info',
+        'pesan' => "🔄 Revisi Permohonan",
+        'alasan' => "{$permohonan->nama_pelanggan} mengirim revisi untuk permohonan #{$id}",
+    ]);
+}
     
     return redirect()->route('user.permohonan.history')->with('success', 'Dokumen berhasil diperbaiki. Menunggu verifikasi.');
 }

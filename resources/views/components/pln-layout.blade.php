@@ -15,21 +15,21 @@
     
     <style>
         :root {
-            --pln-primary: #008080;
-            --pln-primary-dark: #006666;
-            --pln-primary-light: #E0F2F2;
-            --pln-yellow: #FFD100;
-            --pln-yellow-dark: #E6BC00;
-            --pln-blue: #005B9F;
-            --pln-success: #10B981;
-            --pln-warning: #D97706;
-            --pln-danger: #EF4444;
-            --pln-info: #3B82F6;
-            --pln-gray-bg: #F5F7FA;
-            --pln-text-dark: #1F2937;
-            --pln-text-gray: #6B7280;
-            --safe-bottom: env(safe-area-inset-bottom, 0px);
-        }
+    --pln-primary: #24beac;
+    --pln-primary-dark: #359A8F;
+    --pln-primary-light: #D4F5F0;
+    --pln-yellow: #FFD100;
+    --pln-yellow-dark: #E6BC00;
+    --pln-blue: #005B9F;
+    --pln-success: #10B981;
+    --pln-warning: #D97706;
+    --pln-danger: #EF4444;
+    --pln-info: #3B82F6;
+    --pln-gray-bg: #F5F7FA;
+    --pln-text-dark: #1F2937;
+    --pln-text-gray: #6B7280;
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
         
         * {
             margin: 0;
@@ -54,22 +54,22 @@
             position: relative;
         }
         
-        /* Header - HIJAU TOSCA */
-        .app-header {
-            background: var(--pln-primary);
-            color: white;
-            padding: 12px 16px;
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
+        /*Adminn Header*/
+       .app-header {
+    background: var(--pln-primary);  /* #008080 - Hijau Tosca */
+    color: white;
+    padding: 12px 16px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
         
-        .app-header h1 {
-            font-size: 18px;
-            font-weight: 700;
-            color: white;
-        }
+       .app-header h1 {
+    font-size: 18px;
+    font-weight: 700;
+    color: white;  /* 👈 Pastikan ini white */
+}
         
         /* Content Area */
         .app-content {
@@ -194,9 +194,14 @@
             transition: color 0.2s;
         }
         
-        .nav-item.active {
-            color: var(--pln-primary);
-        }
+       .nav-item.active {
+    color: var(--pln-primary);  /* Hijau Tosca #008080 */
+}
+
+.nav-item.active span:last-child {
+    color: var(--pln-primary) !important;
+    font-weight: 600;
+}
         
         .nav-item span:first-child {
             font-size: 22px;
@@ -208,14 +213,14 @@
             transition: filter 0.2s;
         }
         
-        .nav-item.active img {
-            filter: brightness(0) saturate(100%) invert(36%) sepia(67%) saturate(442%) hue-rotate(141deg) brightness(94%) contrast(101%);
-        }
+       .nav-item.active img {
+    filter: brightness(0) saturate(100%) invert(36%) sepia(67%) saturate(442%) hue-rotate(141deg) brightness(94%) contrast(101%);
+}
         
         .nav-item.active span:last-child {
-            color: var(--pln-primary) !important;
-            font-weight: 600;
-        }
+    color: var(--pln-primary) !important;
+    font-weight: 600;
+}
         
         /* Status Badges */
         .badge {
@@ -380,16 +385,31 @@
                     <h1>@yield('header-title', 'SIPEL PLN')</h1>
                 </div>
                 
-                @auth
-                <div class="flex items-center gap-3">
-                    @if(Auth::user()->role == 'user')
-                    <a href="{{ route('user.notifikasi.index') }}" class="relative">
-                        <span class="text-white text-xl">🔔</span>
-                        <span id="notification-badge" class="notification-badge hidden">0</span>
-                    </a>
-                    @endif
-                </div>
-                @endauth
+               @auth
+<div class="flex items-center gap-3">
+    @if(Auth::user()->role == 'user')
+    <a href="{{ route('user.notifikasi.index') }}" class="relative">
+        @if(file_exists(public_path('images/notifikasi/icon-notifikasi.png')))
+        <img src="{{ asset('images/notifikasi/icon-notifikasi.png') }}" alt="Notifikasi" style="width: 24px; height: 24px;">
+        @else
+        <span class="text-white text-xl">🔔</span>
+        @endif
+        <span id="notification-badge" class="notification-badge hidden">0</span>
+    </a>
+    @endif
+    
+    @if(Auth::user()->role == 'admin')
+    <a href="{{ route('admin.notifikasi.index') }}" class="relative">
+        @if(file_exists(public_path('images/notifikasi/icon-notifikasi.png')))
+        <img src="{{ asset('images/notifikasi/icon-notifikasi.png') }}" alt="Notifikasi" style="width: 24px; height: 24px;">
+        @else
+        <span class="text-white text-xl">🔔</span>
+        @endif
+        <span id="admin-notification-badge" class="notification-badge hidden">0</span>
+    </a>
+    @endif
+</div>
+@endauth
             </div>
         </header>
         
@@ -421,12 +441,11 @@
             @endif
         </div>
         
-        {{-- Bottom Navigation (4 item) --}}
+        {{-- Bottom Navigation untuk USER --}}
         @auth
         @if(Auth::user()->role == 'user')
         <nav class="bottom-nav" style="padding: 6px 16px;">
             
-            {{-- Beranda --}}
             <a href="{{ route('user.dashboard') }}" class="nav-item {{ request()->routeIs('user.dashboard') ? 'active' : '' }}">
                 <span style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
                     @if(file_exists(public_path('images/bottom-nav/home.png')))
@@ -438,7 +457,6 @@
                 </span>
             </a>
             
-            {{-- Permohonan --}}
             <a href="{{ route('user.permohonan.create') }}" class="nav-item {{ request()->routeIs('user.permohonan.*') && !request()->routeIs('user.permohonan.history') ? 'active' : '' }}">
                 <span style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
                     @if(file_exists(public_path('images/bottom-nav/permohonan.png')))
@@ -450,7 +468,6 @@
                 </span>
             </a>
             
-            {{-- Riwayat --}}
             <a href="{{ route('user.permohonan.history') }}" class="nav-item {{ request()->routeIs('user.permohonan.history') ? 'active' : '' }}">
                 <span style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
                     @if(file_exists(public_path('images/bottom-nav/riwayat.png')))
@@ -462,7 +479,6 @@
                 </span>
             </a>
             
-            {{-- Akun --}}
             <a href="{{ route('profile.edit') }}" class="nav-item {{ request()->routeIs('profile.*') ? 'active' : '' }}">
                 <span style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
                     @if(file_exists(public_path('images/bottom-nav/akun.png')))
@@ -477,6 +493,65 @@
         </nav>
         @endif
         @endauth
+        
+       {{-- Bottom Navigation untuk ADMIN --}}
+@auth
+@if(Auth::user()->role == 'admin')
+<nav class="bottom-nav" style="padding: 6px 16px; grid-template-columns: repeat({{ Auth::user()->admin_level == 1 ? '4' : '3' }}, 1fr);">
+    
+    {{-- Dashboard --}}
+    <a href="{{ route('admin.dashboard') }}" class="nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+        <span style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
+            @if(file_exists(public_path('images/bottom-nav/admin/dashboard.png')))
+            <img src="{{ asset('images/bottom-nav/admin/dashboard.png') }}" alt="Dashboard" style="width: 20px; height: 20px; object-fit: contain;">
+            @else
+            <span style="font-size: 20px;">🏠</span>
+            @endif
+            <span style="font-size: 11px;">Dashboard</span>
+        </span>
+    </a>
+    
+    {{-- Permohonan --}}
+    <a href="{{ route('admin.verifikasi.index') }}" class="nav-item {{ request()->routeIs('admin.verifikasi.*') ? 'active' : '' }}">
+        <span style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
+            @if(file_exists(public_path('images/bottom-nav/admin/permohonan.png')))
+            <img src="{{ asset('images/bottom-nav/admin/permohonan.png') }}" alt="Permohonan" style="width: 20px; height: 20px; object-fit: contain;">
+            @else
+            <span style="font-size: 20px;">📄</span>
+            @endif
+            <span style="font-size: 11px;">Permohonan</span>
+        </span>
+    </a>
+    
+    {{-- Laporan - HANYA ADMIN UTAMA (LEVEL 1) --}}
+    @if(Auth::user()->admin_level == 1)
+    <a href="{{ route('admin.log.index') }}" class="nav-item {{ request()->routeIs('admin.log.*') ? 'active' : '' }}">
+        <span style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
+            @if(file_exists(public_path('images/bottom-nav/admin/laporan.png')))
+            <img src="{{ asset('images/bottom-nav/admin/laporan.png') }}" alt="Laporan" style="width: 20px; height: 20px; object-fit: contain;">
+            @else
+            <span style="font-size: 20px;">📊</span>
+            @endif
+            <span style="font-size: 11px;">Laporan</span>
+        </span>
+    </a>
+    @endif
+    
+    {{-- Profil --}}
+    <a href="{{ route('profile.edit') }}" class="nav-item {{ request()->routeIs('profile.*') ? 'active' : '' }}">
+        <span style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
+            @if(file_exists(public_path('images/bottom-nav/admin/profil.png')))
+            <img src="{{ asset('images/bottom-nav/admin/profil.png') }}" alt="Profil" style="width: 20px; height: 20px; object-fit: contain;">
+            @else
+            <span style="font-size: 20px;">👤</span>
+            @endif
+            <span style="font-size: 11px;">Profil</span>
+        </span>
+    </a>
+    
+</nav>
+@endif
+@endauth
     </div>
     
     <script>
@@ -490,7 +565,7 @@
             }
         }, 3000);
         
-        // Notification badge
+        // Notification badge untuk User
         @auth
         @if(Auth::user()->role == 'user')
         function updateNotificationBadge() {
@@ -511,6 +586,30 @@
         }
         document.addEventListener('DOMContentLoaded', updateNotificationBadge);
         setInterval(updateNotificationBadge, 30000);
+        @endif
+        @endauth
+        
+        // Notification badge untuk Admin
+        @auth
+        @if(Auth::user()->role == 'admin')
+        function updateAdminNotificationBadge() {
+            fetch('{{ route("admin.notifikasi.unread") }}')
+                .then(response => response.json())
+                .then(data => {
+                    const badge = document.getElementById('admin-notification-badge');
+                    if (badge) {
+                        if (data.count > 0) {
+                            badge.textContent = data.count > 9 ? '9+' : data.count;
+                            badge.classList.remove('hidden');
+                        } else {
+                            badge.classList.add('hidden');
+                        }
+                    }
+                })
+                .catch(err => console.log('Notifikasi Admin error:', err));
+        }
+        document.addEventListener('DOMContentLoaded', updateAdminNotificationBadge);
+        setInterval(updateAdminNotificationBadge, 30000);
         @endif
         @endauth
     </script>

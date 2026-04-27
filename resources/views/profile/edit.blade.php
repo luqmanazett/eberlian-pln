@@ -8,63 +8,61 @@
     
     {{-- Header --}}
     <div class="flex items-center gap-3 mb-1">
-        <a href="{{ route('user.dashboard') }}" class="text-gray-600">
+        <a href="{{ url()->previous() }}" class="text-gray-600">
             <span class="text-2xl">←</span>
         </a>
         <h2 class="text-xl font-bold text-gray-800">Akun Saya</h2>
     </div>
     
     {{-- Profil Info Card --}}
-    <div class="card" style="padding: 20px;">
-        <h3 class="font-semibold text-gray-800 mb-4 text-base">Informasi Profil</h3>
+<div class="card" style="padding: 20px;">
+    <h3 class="font-semibold text-gray-800 mb-4 text-base">Informasi Profil</h3>
+    
+    <form method="POST" action="{{ route('profile.update') }}" class="space-y-4">
+        @csrf
+        @method('PATCH')
         
-        <form method="POST" action="{{ route('profile.update') }}" class="space-y-4">
-            @csrf
-            @method('PATCH')
-            
-            {{-- Nama --}}
-            {{-- Nama (Readonly - Tidak Bisa Diubah) --}}
-<div>
-    <label class="input-label">Nama Lengkap</label>
-    <input type="text" value="{{ Auth::user()->name }}" 
-           class="input-field" style="background: #F3F4F6; color: #6B7280;" readonly disabled>
-    <p class="text-xs text-gray-400 mt-1">Nama terdaftar di sistem PLN, tidak dapat diubah</p>
+        {{-- Nama (Readonly) --}}
+        <div>
+            <label class="input-label">Nama Lengkap</label>
+            <input type="text" value="{{ Auth::user()->name }}" 
+                   class="input-field" style="background: #F3F4F6; color: #6B7280;" readonly disabled>
+            <p class="text-xs text-gray-400 mt-1">Nama terdaftar di sistem PLN, tidak dapat diubah</p>
+        </div>
+        
+        {{-- Nomor KTP (Readonly) - DIPINDAHKAN KE SINI --}}
+        <div>
+            <label class="input-label">Nomor KTP</label>
+            <input type="text" value="{{ Auth::user()->no_ktp ?? 'Belum diisi' }}" 
+                   class="input-field" style="background: #F3F4F6; color: #6B7280;" readonly disabled>
+            <p class="text-xs text-gray-400 mt-1">Nomor KTP terdaftar di sistem</p>
+        </div>
+        
+        {{-- Email --}}
+        <div>
+            <label class="input-label">Email</label>
+            <input type="email" name="email" value="{{ old('email', Auth::user()->email) }}" 
+                   class="input-field" placeholder="Email" required>
+            @error('email')
+            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+            @enderror
+        </div>
+        
+        {{-- Nomor Telepon --}}
+        <div>
+            <label class="input-label">Nomor Telepon</label>
+            <input type="tel" name="no_telepon" value="{{ old('no_telepon', Auth::user()->no_telepon) }}" 
+                   class="input-field" placeholder="0812-3456-7890">
+            @error('no_telepon')
+            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+            @enderror
+        </div>
+        
+        <button type="submit" class="btn btn-primary" style="padding: 12px 20px; width: 100%;">
+            Simpan Perubahan
+        </button>
+    </form>
 </div>
-            {{-- No KTP (Readonly) --}}
-<div>
-    <label class="input-label">Nomor KTP</label>
-    <input type="text" value="{{ Auth::user()->no_ktp ?? 'Belum diisi' }}" 
-           class="input-field" style="background: #F3F4F6; color: #6B7280;" readonly disabled>
-    <p class="text-xs text-gray-400 mt-1">Nomor KTP terdaftar di sistem</p>
-</div>
-            {{-- Email --}}
-            <div>
-                <label class="input-label">Email</label>
-                <input type="email" name="email" value="{{ old('email', Auth::user()->email) }}" 
-                       class="input-field" placeholder="Email" required>
-                @error('email')
-                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                @enderror
-            </div>
-            
-            {{-- Nomor Telepon --}}
-            <div>
-                <label class="input-label">Nomor Telepon</label>
-                <input type="tel" name="no_telepon" value="{{ old('no_telepon', Auth::user()->no_telepon) }}" 
-                       class="input-field" placeholder="0812-3456-7890">
-                @error('no_telepon')
-                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                @enderror
-            </div>
-            
-            {{-- Spacer sebelum button --}}
-            <div class="pt-2"></div>
-            
-            <button type="submit" class="btn btn-primary" style="padding: 12px 20px; width: 100%;">
-                Simpan Perubahan
-            </button>
-        </form>
-    </div>
     
     {{-- Ganti Password Card --}}
     <div class="card" style="padding: 20px;">
@@ -80,7 +78,6 @@
             @csrf
             @method('PUT')
             
-            {{-- Password Saat Ini --}}
             <div>
                 <label class="input-label">Password Saat Ini</label>
                 <input type="password" name="current_password" class="input-field" placeholder="••••••••" required>
@@ -89,7 +86,6 @@
                 @enderror
             </div>
             
-            {{-- Password Baru --}}
             <div>
                 <label class="input-label">Password Baru</label>
                 <input type="password" name="password" class="input-field" placeholder="••••••••" required>
@@ -98,20 +94,29 @@
                 @enderror
             </div>
             
-            {{-- Konfirmasi Password Baru --}}
             <div>
                 <label class="input-label">Konfirmasi Password Baru</label>
                 <input type="password" name="password_confirmation" class="input-field" placeholder="••••••••" required>
             </div>
-            
-            {{-- Spacer sebelum button --}}
-            <div class="pt-2"></div>
             
             <button type="submit" class="btn btn-primary" style="padding: 12px 20px; width: 100%;">
                 Ganti Password
             </button>
         </form>
     </div>
+    
+    {{-- Manajemen User (Hanya Admin Utama) --}}
+    @if(Auth::user()->role == 'admin' && Auth::user()->canManageUsers())
+    <div class="card" style="padding: 20px;">
+        <a href="{{ route('admin.user.index') }}" class="flex items-center justify-between">
+            <div>
+                <h3 class="font-semibold text-gray-800 text-base">👥 Manajemen User</h3>
+                <p class="text-sm text-gray-500 mt-1">Kelola akun pengguna sistem</p>
+            </div>
+            <span class="text-pln-primary text-2xl">→</span>
+        </a>
+    </div>
+    @endif
     
     {{-- Logout Button --}}
     <div class="card" style="padding: 16px 20px;">

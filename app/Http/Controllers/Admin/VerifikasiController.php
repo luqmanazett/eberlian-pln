@@ -66,6 +66,21 @@ class VerifikasiController extends Controller
             'approved_by' => Auth::id(),
         ]);
         
+        // HANYA catat riwayat jika ada penolakan sebelumnya (jumlah_perbaikan > 0)
+        if ($permohonan->jumlah_perbaikan > 0) {
+            RiwayatPerbaikan::create([
+                'permohonan_id' => $permohonan->id,
+                'user_id' => Auth::id(),
+                'versi_ke' => $permohonan->jumlah_perbaikan + 1,
+                'dokumen_yang_diperbaiki' => ['semua_dokumen'],
+                'dokumen_yang_ditolak' => null,
+                'alasan_penolakan_sebelumnya' => $request->catatan_admin ?? 'Permohonan disetujui.',
+                'status_perbaikan' => 'approved',
+                'submitted_at' => now(),
+                'reviewed_at' => now(),
+            ]);
+        }
+        
         Notifikasi::create([
             'user_id' => $permohonan->user_id,
             'permohonan_id' => $permohonan->id,
@@ -92,12 +107,24 @@ class VerifikasiController extends Controller
         
         DB::transaction(function() use ($request, $permohonan) {
             
-            // Cek apakah ada dokumen yang ditolak
             $hasDokumenDitolak = $request->has('dokumen_ditolak') && count($request->dokumen_ditolak) > 0;
             
-            // Jika TIDAK ADA yang dicentang, atau Data Pemohon dicentang
+            $dokumenDitolak = $hasDokumenDitolak ? array_keys($request->dokumen_ditolak) : [];
+            $dokumenUpload = array_filter($dokumenDitolak, function($d) { 
+                return $d !== 'data_pemohon'; 
+            });
+            
+            $isPenolakanPermanen = false;
+            $isPerluPerbaikan = false;
+            
             if (!$hasDokumenDitolak || $request->has('dokumen_ditolak.data_pemohon')) {
-                // Permohonan ditolak permanen, user harus buat baru
+                $isPenolakanPermanen = true;
+            } elseif (!empty($dokumenUpload)) {
+                $isPerluPerbaikan = true;
+            }
+            
+            // ===== PENOLAKAN PERMANEN =====
+            if ($isPenolakanPermanen) {
                 $permohonan->update([
                     'status' => 'rejected',
                     'catatan_reject_global' => $request->catatan_reject_global,
@@ -106,7 +133,6 @@ class VerifikasiController extends Controller
                     'jumlah_perbaikan' => 3,
                 ]);
                 
-                // Notifikasi dengan alasan lengkap
                 $alasan = $this->buildAlasanLengkap($request);
                 
                 Notifikasi::create([
@@ -117,22 +143,23 @@ class VerifikasiController extends Controller
                     'alasan' => $alasan ?: 'Permohonan ditolak.',
                 ]);
                 
+                ActivityLog::create([
+                    'user_id' => Auth::id(),
+                    'role' => 'admin',
+                    'action' => 'reject_permohonan',
+                    'description' => "Admin menolak permanen permohonan #{$permohonan->id}",
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ]);
+                
                 return;
             }
             
-            // Jika ada dokumen yang ditolak (selain data_pemohon)
-            $dokumenDitolak = array_keys($request->dokumen_ditolak);
-            $dokumenDitolak = array_filter($dokumenDitolak, function($d) { 
-                return $d !== 'data_pemohon'; 
-            });
-            
-            if (!empty($dokumenDitolak)) {
-                
-                // 👇 RESET SEMUA DETAIL PENOLAKAN LAMA
+            // ===== PERLU PERBAIKAN =====
+            if ($isPerluPerbaikan) {
                 DetailPenolakan::where('permohonan_id', $permohonan->id)->delete();
                 
-                // 👇 SIMPAN HANYA DOKUMEN YANG DICENTANG SEKARANG
-                foreach ($dokumenDitolak as $dokumen) {
+                foreach ($dokumenUpload as $dokumen) {
                     DetailPenolakan::create([
                         'permohonan_id' => $permohonan->id,
                         'dokumen_type' => $dokumen,
@@ -141,9 +168,8 @@ class VerifikasiController extends Controller
                     ]);
                 }
                 
-                // Simpan riwayat perbaikan
                 $dokumenDitolakDetail = [];
-                foreach ($dokumenDitolak as $dokumen) {
+                foreach ($dokumenUpload as $dokumen) {
                     $dokumenDitolakDetail[$dokumen] = $request->alasan[$dokumen] ?? 'Dokumen tidak sesuai';
                 }
                 
@@ -151,60 +177,53 @@ class VerifikasiController extends Controller
                     'permohonan_id' => $permohonan->id,
                     'user_id' => $permohonan->user_id,
                     'versi_ke' => $permohonan->jumlah_perbaikan + 1,
-                    'dokumen_yang_diperbaiki' => $dokumenDitolak,
+                    'dokumen_yang_diperbaiki' => $dokumenUpload,
                     'dokumen_yang_ditolak' => $dokumenDitolakDetail,
                     'alasan_penolakan_sebelumnya' => $request->catatan_reject_global ?? 'Dokumen perlu diperbaiki',
                     'status_perbaikan' => 'rejected',
                     'submitted_at' => now(),
                     'reviewed_at' => now(),
                 ]);
+                
+                $permohonan->update([
+                    'status' => 'rejected',
+                    'catatan_reject_global' => $request->catatan_reject_global,
+                    'rejected_at' => now(),
+                    'tanggal_reject' => now(),
+                ]);
+                
+                $alasan = $this->buildAlasanLengkap($request);
+                
+                Notifikasi::create([
+                    'user_id' => $permohonan->user_id,
+                    'permohonan_id' => $permohonan->id,
+                    'jenis_notifikasi' => 'perlu_perbaikan',
+                    'pesan' => 'Dokumen perlu diperbaiki. Silakan upload ulang.',
+                    'alasan' => $alasan ?: 'Dokumen perlu diperbaiki.',
+                ]);
+                
+                ActivityLog::create([
+                    'user_id' => Auth::id(),
+                    'role' => 'admin',
+                    'action' => 'reject_perbaikan',
+                    'description' => "Admin meminta perbaikan dokumen untuk permohonan #{$permohonan->id}",
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                ]);
             }
-            
-            $permohonan->update([
-                'status' => 'rejected',
-                'catatan_reject_global' => $request->catatan_reject_global,
-                'rejected_at' => now(),
-                'tanggal_reject' => now(),
-            ]);
-            
-            // Notifikasi dengan alasan lengkap
-            $alasan = $this->buildAlasanLengkap($request);
-            
-            Notifikasi::create([
-                'user_id' => $permohonan->user_id,
-                'permohonan_id' => $permohonan->id,
-                'jenis_notifikasi' => 'rejected',
-                'pesan' => 'Permohonan DITOLAK. Silakan perbaiki dokumen.',
-                'alasan' => $alasan ?: 'Dokumen perlu diperbaiki.',
-            ]);
-            
-            // Log Aktivitas
-            ActivityLog::create([
-                'user_id' => Auth::id(),
-                'role' => 'admin',
-                'action' => 'reject_permohonan',
-                'description' => "Admin menolak permohonan #{$permohonan->id}",
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent(),
-            ]);
         });
         
-        return redirect()->route('admin.verifikasi.index')->with('success', 'Permohonan ditolak.');
+        return redirect()->route('admin.verifikasi.index')->with('success', 'Permohonan diproses.');
     }
     
-    /**
-     * Build alasan lengkap dari catatan global + alasan per dokumen
-     */
     private function buildAlasanLengkap(Request $request): string
     {
         $alasanParts = [];
         
-        // Catatan global
         if ($request->catatan_reject_global) {
             $alasanParts[] = $request->catatan_reject_global;
         }
         
-        // Alasan per dokumen
         if ($request->has('alasan') && is_array($request->alasan)) {
             $alasanDetail = [];
             $labels = [
@@ -239,9 +258,212 @@ class VerifikasiController extends Controller
         $permohonan = Permohonan::with(['riwayatPerbaikan.user', 'user'])->findOrFail($id);
         
         $riwayatPerbaikan = $permohonan->riwayatPerbaikan()
-            ->orderBy('versi_ke', 'desc')
+            ->orderBy('submitted_at', 'desc')
             ->get();
         
         return view('admin.verifikasi.history-perbaikan', compact('permohonan', 'riwayatPerbaikan'));
+    }
+    
+    /**
+     * Export permohonan ke CSV
+     */
+public function exportExcel($id)
+{
+    $permohonan = Permohonan::with('user')->findOrFail($id);
+    
+    $filename = 'permohonan_PMH-' . str_pad($permohonan->id, 6, '0', STR_PAD_LEFT) . '.xlsx';
+    
+    $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+    $sheet = $spreadsheet->getActiveSheet();
+    $sheet->setTitle('Detail Permohonan');
+    
+    // Header style
+    $headerStyle = [
+        'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
+        'fill' => ['fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID, 'startColor' => ['rgb' => '46C2B3']],
+        'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER],
+        'borders' => ['allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]],
+    ];
+    
+    $sectionStyle = [
+        'font' => ['bold' => true, 'size' => 14, 'color' => ['rgb' => '46C2B3']],
+    ];
+    
+    // Set headers
+    $headers = ['No', 'Field', 'Value'];
+    foreach ($headers as $col => $header) {
+        $cell = $sheet->setCellValueByColumnAndRow($col + 1, 1, $header);
+        $sheet->getStyleByColumnAndRow($col + 1, 1)->applyFromArray($headerStyle);
+    }
+    
+    $row = 2;
+    $no = 1;
+    
+    // === SECTION: DATA PEMOHON ===
+    $sheet->mergeCells("A{$row}:C{$row}");
+    $sheet->setCellValue("A{$row}", 'DATA PEMOHON');
+    $sheet->getStyle("A{$row}")->applyFromArray($sectionStyle);
+    $row++;
+    
+    $dataPemohon = [
+        'No Permohonan' => 'PMH-' . str_pad($permohonan->id, 6, '0', STR_PAD_LEFT),
+        'Nama Pelanggan' => $permohonan->nama_pelanggan,
+        'Jenis Permohonan' => ucwords(str_replace('_', ' ', $permohonan->jenis_permohonan)),
+        'No KTP' => $permohonan->no_ktp,
+        'IDPEL' => $permohonan->idpel ?? '-',
+        'No Telepon' => $permohonan->no_telepon,
+        'ULP' => $permohonan->ulp,
+        'Alamat Gardu' => $permohonan->alamat_gardu,
+        'Nama Gardu' => $permohonan->nama_gardu,
+        'Status' => ucfirst($permohonan->status),
+        'Tanggal Pengajuan' => $permohonan->created_at->format('d/m/Y H:i'),
+        'Diajukan Oleh' => $permohonan->user->name ?? '-',
+    ];
+    
+    foreach ($dataPemohon as $field => $value) {
+        $sheet->setCellValue("A{$row}", $no++);
+        $sheet->setCellValue("B{$row}", $field);
+        $sheet->setCellValue("C{$row}", $value);
+        $row++;
+    }
+    
+    // === SECTION: FORM BA LAHAN (Jika ada) ===
+    if ($permohonan->ba_lahan_type == 'form' && $permohonan->ba_lahan_data) {
+        $row++; // Spasi
+        $sheet->mergeCells("A{$row}:C{$row}");
+        $sheet->setCellValue("A{$row}", 'DATA FORM BA LAHAN');
+        $sheet->getStyle("A{$row}")->applyFromArray($sectionStyle);
+        $row++;
+        
+        $dataForm = json_decode($permohonan->ba_lahan_data, true);
+        $labels = [
+            'unit_pln' => 'Unit PLN',
+            'nama_pekerjaan' => 'Nama Pekerjaan',
+            'desa_kelurahan' => 'Desa/Kelurahan',
+            'kecamatan' => 'Kecamatan',
+            'kabupaten_kota' => 'Kabupaten/Kota',
+            'nama_pemilik' => 'Nama Pemilik',
+            'no_telepon_pemilik' => 'No Telepon Pemilik',
+            'alamat_pemilik' => 'Alamat Pemilik',
+            'status_pemilik' => 'Status Pemilik',
+            'pernyataan_1' => 'Berdampak terhadap 200 orang atau lebih',
+            'pernyataan_2' => 'Berdampak terhadap berkurangnya pendapatan >10%',
+            'pernyataan_3' => 'Berlokasi di lahan masyarakat adat',
+            'pernyataan_4' => 'Berdampak negatif terhadap masyarakat adat',
+        ];
+        
+        foreach ($labels as $key => $label) {
+            $value = $dataForm[$key] ?? '-';
+            if (in_array($key, ['pernyataan_1', 'pernyataan_2', 'pernyataan_3', 'pernyataan_4'])) {
+                $value = $value ? 'Ya' : 'Tidak';
+            }
+            $sheet->setCellValue("A{$row}", $no++);
+            $sheet->setCellValue("B{$row}", $label);
+            $sheet->setCellValue("C{$row}", $value);
+            $row++;
+        }
+    }
+    
+    // === SECTION: FORM BA LINGKUNGAN (Jika ada) ===
+    if ($permohonan->ba_lingkungan_type == 'form' && $permohonan->ba_lingkungan_data) {
+        $row++; // Spasi
+        $sheet->mergeCells("A{$row}:C{$row}");
+        $sheet->setCellValue("A{$row}", 'DATA FORM BA LINGKUNGAN');
+        $sheet->getStyle("A{$row}")->applyFromArray($sectionStyle);
+        $row++;
+        
+        $dataForm = json_decode($permohonan->ba_lingkungan_data, true);
+        $labels = [
+            'nomor_ba' => 'Nomor BA',
+            'nama_pihak_kesatu' => 'Pihak Kesatu',
+            'jabatan_pihak_kesatu' => 'Jabatan Pihak Kesatu',
+            'nama_pihak_kedua' => 'Pihak Kedua (PLN)',
+            'luas_tanah' => 'Luas Tanah',
+            'lokasi' => 'Lokasi',
+            'nomor_sertifikat' => 'Nomor Sertifikat',
+            'batas_utara' => 'Batas Utara',
+            'batas_timur' => 'Batas Timur',
+            'batas_selatan' => 'Batas Selatan',
+            'batas_barat' => 'Batas Barat',
+        ];
+        
+        foreach ($labels as $key => $label) {
+            $value = $dataForm[$key] ?? '-';
+            $sheet->setCellValue("A{$row}", $no++);
+            $sheet->setCellValue("B{$row}", $label);
+            $sheet->setCellValue("C{$row}", $value);
+            $row++;
+        }
+    }
+    
+    // Auto size columns
+    $sheet->getColumnDimension('A')->setWidth(5);
+    $sheet->getColumnDimension('B')->setWidth(35);
+    $sheet->getColumnDimension('C')->setWidth(50);
+    
+    // Border untuk semua cell
+    $lastRow = $row - 1;
+    $sheet->getStyle("A1:C{$lastRow}")->applyFromArray([
+        'borders' => ['allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]],
+    ]);
+    
+    // Download
+    $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+    
+    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    header('Content-Disposition: attachment; filename="' . $filename . '"');
+    header('Cache-Control: max-age=0');
+    
+    $writer->save('php://output');
+    exit;
+}   
+    /**
+     * Export permohonan ke PDF
+     */
+    public function exportPdf($id)
+    {
+        $permohonan = Permohonan::with('user')->findOrFail($id);
+        
+        $html = '<h1 style="text-align: center; color: #46C2B3;">SIPEL PLN</h1>';
+        $html .= '<h2 style="text-align: center;">Detail Permohonan</h2>';
+        $html .= '<hr>';
+        $html .= '<p><strong>No Permohonan:</strong> PMH-' . str_pad($permohonan->id, 6, '0', STR_PAD_LEFT) . '</p>';
+        $html .= '<p><strong>Nama Pelanggan:</strong> ' . $permohonan->nama_pelanggan . '</p>';
+        $html .= '<p><strong>Jenis Permohonan:</strong> ' . ucwords(str_replace('_', ' ', $permohonan->jenis_permohonan)) . '</p>';
+        $html .= '<p><strong>No KTP:</strong> ' . $permohonan->no_ktp . '</p>';
+        $html .= '<p><strong>IDPEL:</strong> ' . ($permohonan->idpel ?? '-') . '</p>';
+        $html .= '<p><strong>No Telepon:</strong> ' . $permohonan->no_telepon . '</p>';
+        $html .= '<p><strong>ULP:</strong> ' . $permohonan->ulp . '</p>';
+        $html .= '<p><strong>Alamat Gardu:</strong> ' . $permohonan->alamat_gardu . '</p>';
+        $html .= '<p><strong>Nama Gardu:</strong> ' . $permohonan->nama_gardu . '</p>';
+        $html .= '<p><strong>Status:</strong> ' . ucfirst($permohonan->status) . '</p>';
+        $html .= '<p><strong>Tanggal Pengajuan:</strong> ' . $permohonan->created_at->format('d/m/Y H:i') . '</p>';
+        $html .= '<p><strong>Diajukan Oleh:</strong> ' . ($permohonan->user->name ?? '-') . '</p>';
+        
+        if ($permohonan->ba_lahan_type == 'form' && $permohonan->ba_lahan_data) {
+            $html .= '<hr><h3>Data Form BA Lahan</h3><ul>';
+            $data = json_decode($permohonan->ba_lahan_data, true);
+            foreach ($data as $key => $value) {
+                $label = ucwords(str_replace('_', ' ', $key));
+                $val = is_array($value) ? ($value ? 'Ya' : 'Tidak') : $value;
+                $html .= '<li><strong>' . $label . ':</strong> ' . $val . '</li>';
+            }
+            $html .= '</ul>';
+        }
+        
+        if ($permohonan->ba_lingkungan_type == 'form' && $permohonan->ba_lingkungan_data) {
+            $html .= '<hr><h3>Data Form BA Lingkungan</h3><ul>';
+            $data = json_decode($permohonan->ba_lingkungan_data, true);
+            foreach ($data as $key => $value) {
+                $label = ucwords(str_replace('_', ' ', $key));
+                $val = is_array($value) ? ($value ? 'Ya' : 'Tidak') : $value;
+                $html .= '<li><strong>' . $label . ':</strong> ' . $val . '</li>';
+            }
+            $html .= '</ul>';
+        }
+        
+        $pdf = \Barryvdh\Snappy\Facades\SnappyPdf::loadHTML($html);
+        
+        return $pdf->download('permohonan_PMH-' . str_pad($permohonan->id, 6, '0', STR_PAD_LEFT) . '.pdf');
     }
 }
