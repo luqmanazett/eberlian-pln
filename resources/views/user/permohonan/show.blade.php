@@ -18,7 +18,7 @@
     <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
         <div class="flex items-center justify-between mb-3">
             <h3 class="font-semibold text-gray-800">
-                #{{ str_pad($permohonan->id, 6, '0', STR_PAD_LEFT) }}
+                ID Register: {{ $permohonan->id_register ?? ('PMH-' . $permohonan->id) }}
             </h3>
             @if($permohonan->status == 'pending')
             <span class="badge badge-pending">Menunggu</span>
@@ -46,6 +46,10 @@
                 <span class="text-gray-500">No KTP</span>
                 <span class="font-medium">{{ $permohonan->no_ktp }}</span>
             </div>
+            <div class="flex justify-between">
+                <span class="text-gray-500">ID Register</span>
+                <span class="font-medium">{{ $permohonan->id_register ?? ('PMH-' . $permohonan->id) }}</span>
+            </div>
             @if($permohonan->idpel)
             <div class="flex justify-between">
                 <span class="text-gray-500">IDPEL</span>
@@ -64,10 +68,15 @@
     </div>
     
    {{-- Alasan Penolakan (Jika ditolak) --}}
-@if($permohonan->status == 'rejected' && $permohonan->catatan_reject_global)
+@if($permohonan->status == 'rejected')
 <div class="bg-red-50 rounded-xl p-4 border border-red-200">
     <h4 class="font-bold text-red-800 mb-2">📋 Catatan Penolakan</h4>
+    
+    @if($permohonan->catatan_reject_global)
     <p class="text-sm text-red-700 font-medium">{{ $permohonan->catatan_reject_global }}</p>
+    @else
+    <p class="text-sm text-red-700 font-medium italic">Silakan perbaiki dokumen yang ditolak di bawah ini.</p>
+    @endif
     
     {{-- Detail dokumen yang ditolak --}}
     @if($permohonan->detailPenolakan->where('ditolak', true)->count() > 0)
@@ -76,7 +85,7 @@
         <ul class="list-disc list-inside text-sm text-red-700 space-y-1">
             @foreach($permohonan->detailPenolakan->where('ditolak', true) as $detail)
             <li>
-                <span class="font-medium">{{ \App\Models\DetailPenolakan::getDokumenLabels()[$detail->dokumen_type] }}</span>
+                <span class="font-medium">{{ \App\Models\DetailPenolakan::getDokumenLabels()[$detail->dokumen_type] ?? $detail->dokumen_type }}</span>
                 @if($detail->alasan_penolakan)
                 <br><span class="text-xs text-red-600 ml-5">Alasan: {{ $detail->alasan_penolakan }}</span>
                 @endif

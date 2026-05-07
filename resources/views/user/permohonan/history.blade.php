@@ -79,7 +79,7 @@
         </div>
         <div class="flex items-center justify-between">
             <p class="text-xs text-gray-400">
-                ID: #{{ str_pad($item->id, 11, '0', STR_PAD_LEFT) }}
+                ID Register: {{ $item->id_register ?? ('PMH-' . $item->id) }}
             </p>
             <span class="text-gray-400 text-sm">→</span>
         </div>

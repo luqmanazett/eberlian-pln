@@ -48,7 +48,7 @@ class PermohonanExport implements FromQuery, WithHeadings, WithMapping, ShouldAu
     {
         return [
             'No',
-            'ID Permohonan',
+            'ID Register',
             'Tanggal Upload',
             'Jenis Permohonan',
             'IDPEL',
@@ -64,6 +64,34 @@ class PermohonanExport implements FromQuery, WithHeadings, WithMapping, ShouldAu
             'Tanggal Reject',
             'Catatan Admin',
             'User (Email)',
+            // BA Lingkungan (Penilaian Dampak) - stored in ba_lahan_data
+            'Tipe BA Lingkungan',
+            'Unit PLN (BA Lingkungan)',
+            'Nama Pekerjaan (BA Lingkungan)',
+            'Desa/Kelurahan (BA Lingkungan)',
+            'Kecamatan (BA Lingkungan)',
+            'Kabupaten/Kota (BA Lingkungan)',
+            'Nama Pemilik (BA Lingkungan)',
+            'No Telepon Pemilik (BA Lingkungan)',
+            'Alamat Pemilik (BA Lingkungan)',
+            'Status Pemilik (BA Lingkungan)',
+            'Dampak >= 200 org (BA Lingkungan)',
+            'Dampak Pendapatan >10% (BA Lingkungan)',
+            'Lahan Masyarakat Adat (BA Lingkungan)',
+            'Dampak Negatif Masy Adat (BA Lingkungan)',
+            // BA Lahan (Serah Terima Gardu) - stored in ba_lingkungan_data
+            'Tipe BA Lahan',
+            'Nomor BA Lahan',
+            'Nama Pihak Kesatu',
+            'Jabatan Pihak Kesatu',
+            'Nama Pihak Kedua (PLN)',
+            'Luas Tanah (BA Lahan)',
+            'Lokasi (BA Lahan)',
+            'Nomor Sertifikat (BA Lahan)',
+            'Batas Utara',
+            'Batas Timur',
+            'Batas Selatan',
+            'Batas Barat',
         ];
     }
     
@@ -71,9 +99,9 @@ class PermohonanExport implements FromQuery, WithHeadings, WithMapping, ShouldAu
     {
         static $no = 1;
         
-        return [
+        $row = [
             $no++,
-            '#' . str_pad($permohonan->id, 11, '0', STR_PAD_LEFT),
+            $permohonan->id_register ?? ('PMH-' . $permohonan->id),
             $permohonan->tanggal_upload ? $permohonan->tanggal_upload->format('d/m/Y H:i') : '-',
             ucwords(str_replace('_', ' ', $permohonan->jenis_permohonan)),
             $permohonan->idpel ?? '-',
@@ -90,6 +118,44 @@ class PermohonanExport implements FromQuery, WithHeadings, WithMapping, ShouldAu
             $permohonan->catatan_admin ?? '-',
             $permohonan->user->email ?? '-',
         ];
+        
+        // BA Lahan
+        $baLahanType = $permohonan->ba_lahan_type == 'form' ? 'Form Isian' : ($permohonan->ba_lahan_type == 'upload' ? 'Upload File' : '-');
+        $baLahanData = $permohonan->ba_lahan_type == 'form' && $permohonan->ba_lahan_data ? json_decode($permohonan->ba_lahan_data, true) : [];
+        
+        $row[] = $baLahanType;
+        $row[] = $baLahanData['unit_pln'] ?? '-';
+        $row[] = $baLahanData['nama_pekerjaan'] ?? '-';
+        $row[] = $baLahanData['desa_kelurahan'] ?? '-';
+        $row[] = $baLahanData['kecamatan'] ?? '-';
+        $row[] = $baLahanData['kabupaten_kota'] ?? '-';
+        $row[] = $baLahanData['nama_pemilik'] ?? '-';
+        $row[] = $baLahanData['no_telepon_pemilik'] ?? '-';
+        $row[] = $baLahanData['alamat_pemilik'] ?? '-';
+        $row[] = $baLahanData['status_pemilik'] ?? '-';
+        $row[] = !empty($baLahanData['pernyataan_1']) ? 'Ya' : 'Tidak';
+        $row[] = !empty($baLahanData['pernyataan_2']) ? 'Ya' : 'Tidak';
+        $row[] = !empty($baLahanData['pernyataan_3']) ? 'Ya' : 'Tidak';
+        $row[] = !empty($baLahanData['pernyataan_4']) ? 'Ya' : 'Tidak';
+        
+        // BA Lingkungan
+        $baLingType = $permohonan->ba_lingkungan_type == 'form' ? 'Form Isian' : ($permohonan->ba_lingkungan_type == 'upload' ? 'Upload File' : '-');
+        $baLingData = $permohonan->ba_lingkungan_type == 'form' && $permohonan->ba_lingkungan_data ? json_decode($permohonan->ba_lingkungan_data, true) : [];
+        
+        $row[] = $baLingType;
+        $row[] = $baLingData['nomor_ba'] ?? '-';
+        $row[] = $baLingData['nama_pihak_kesatu'] ?? '-';
+        $row[] = $baLingData['jabatan_pihak_kesatu'] ?? '-';
+        $row[] = $baLingData['nama_pihak_kedua'] ?? '-';
+        $row[] = $baLingData['luas_tanah'] ?? '-';
+        $row[] = $baLingData['lokasi'] ?? '-';
+        $row[] = $baLingData['nomor_sertifikat'] ?? '-';
+        $row[] = $baLingData['batas_utara'] ?? '-';
+        $row[] = $baLingData['batas_timur'] ?? '-';
+        $row[] = $baLingData['batas_selatan'] ?? '-';
+        $row[] = $baLingData['batas_barat'] ?? '-';
+        
+        return $row;
     }
     
     public function styles(Worksheet $sheet)

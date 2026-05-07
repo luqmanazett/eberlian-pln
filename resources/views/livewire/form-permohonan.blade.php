@@ -41,19 +41,17 @@
     {{-- STEP 1: Data Diri --}}
     @if($currentStep == 1)
     <div class="space-y-4">
-        {{-- IDPEL - Opsional untuk Tambah Daya & Peningkatan Keandalan --}}
-        @if($showIdpelField)
+        {{-- IDPEL (Hanya untuk Tambah Daya & Peningkatan Keandalan) --}}
+        @if($jenis_permohonan != 'pasang_baru')
         <div class="bg-white rounded-xl p-4 shadow-sm">
-            <label class="block font-medium mb-2">IDPEL <span class="text-gray-400 text-xs font-normal">(Opsional)</span></label>
-            <input type="text" wire:model="idpel" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pln-primary focus:ring-1 focus:ring-pln-primary" placeholder="Masukkan IDPEL (opsional)">
+            @if($jenis_permohonan == 'tambah_daya')
+                <label class="block font-medium mb-2">IDPEL <span class="text-red-500">*</span></label>
+                <input type="text" wire:model="idpel" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pln-primary focus:ring-1 focus:ring-pln-primary" placeholder="Masukkan IDPEL">
+            @else
+                <label class="block font-medium mb-2">IDPEL <span class="text-gray-400 text-xs font-normal">(Opsional)</span></label>
+                <input type="text" wire:model="idpel" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pln-primary focus:ring-1 focus:ring-pln-primary" placeholder="Masukkan IDPEL (opsional)">
+            @endif
             @error('idpel') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
-        </div>
-        @endif
-        
-        {{-- Untuk Pasang Baru, IDPEL tidak ditampilkan (dibuat otomatis) --}}
-        @if($jenis_permohonan == 'pasang_baru')
-        <div class="bg-blue-50 rounded-xl p-4 text-sm text-blue-800">
-            ℹ️ IDPEL akan dibuat otomatis oleh sistem.
         </div>
         @endif
         
@@ -114,9 +112,9 @@
     {{-- STEP 2: Upload Dokumen --}}
     @if($currentStep == 2)
     <div class="space-y-3">
-        {{-- BA Lahan --}}
+        {{-- BA Lingkungan (Penilaian Dampak) --}}
         <div class="bg-white rounded-xl p-4 shadow-sm">
-            <label class="block font-medium mb-3">BA Lahan <span class="text-red-500">*</span></label>
+            <label class="block font-medium mb-3">BA Lingkungan (Penilaian Dampak) <span class="text-red-500">*</span></label>
             
             {{-- Pilih Opsi --}}
            <div class="mb-4">
@@ -210,9 +208,9 @@
             @endif
         </div>
         
-        {{-- BA Lingkungan --}}
+        {{-- BA Lahan (Serah Terima Gardu) --}}
         <div class="bg-white rounded-xl p-4 shadow-sm mt-4">
-            <label class="block font-medium mb-3">BA Lingkungan <span class="text-red-500">*</span></label>
+            <label class="block font-medium mb-3">BA Lahan (Serah Terima Gardu) <span class="text-red-500">*</span></label>
             
             {{-- Pilih Opsi --}}
          <div class="mb-4">
@@ -350,7 +348,7 @@
         
         @if($ba_lahan_option == 'form')
         <div class="card">
-            <label class="font-medium text-gray-800 mb-3 block">Tanda Tangan BA Lahan (Elektronik) <span class="text-red-500">*</span></label>
+            <label class="font-medium text-gray-800 mb-3 block">Tanda Tangan BA Lingkungan (Elektronik) <span class="text-red-500">*</span></label>
             <iframe src="/canvas-signature.html?id=ba_lahan_elektronik" 
                     style="width: 100%; height: 220px; border: none; border-radius: 12px; background: white;">
             </iframe>
@@ -359,13 +357,13 @@
         </div>
         @else
         <div class="card bg-green-50">
-            <p class="text-green-800">✅ BA Lahan diupload, tanda tangan manual sudah ada di file.</p>
+            <p class="text-green-800">✅ BA Lingkungan diupload, tanda tangan manual sudah ada di file.</p>
         </div>
         @endif
         
         @if($ba_lingkungan_option == 'form')
         <div class="card">
-            <label class="font-medium text-gray-800 mb-3 block">Tanda Tangan BA Lingkungan (Elektronik) <span class="text-red-500">*</span></label>
+            <label class="font-medium text-gray-800 mb-3 block">Tanda Tangan BA Lahan (Elektronik) <span class="text-red-500">*</span></label>
             <iframe src="/canvas-signature.html?id=ba_lingkungan_elektronik" 
                     style="width: 100%; height: 220px; border: none; border-radius: 12px; background: white;">
             </iframe>
@@ -374,7 +372,7 @@
         </div>
         @else
         <div class="card bg-green-50">
-            <p class="text-green-800">✅ BA Lingkungan diupload, tanda tangan manual sudah ada di file.</p>
+            <p class="text-green-800">✅ BA Lahan diupload, tanda tangan manual sudah ada di file.</p>
         </div>
         @endif
     </div>

@@ -19,7 +19,7 @@
         <div class="flex items-center justify-between">
             <div>
                 <p class="font-semibold text-gray-800">{{ $permohonan->nama_pelanggan }}</p>
-                <p class="text-sm text-gray-500">ID: #{{ str_pad($permohonan->id, 11, '0', STR_PAD_LEFT) }}</p>
+                <p class="text-sm text-gray-500">ID Register: {{ $permohonan->id_register ?? ('PMH-' . $permohonan->id) }}</p>
             </div>
             <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
                 Total: {{ $permohonan->jumlah_perbaikan }}/3
@@ -101,9 +101,13 @@
                     <ul class="space-y-1">
                         @if($riwayat->status_perbaikan == 'approved')
                             {{-- Untuk disetujui, tampilkan catatan jika ada --}}
-                            @if(isset($riwayat->catatan) && $riwayat->catatan)
+                            @if(isset($riwayat->alasan_penolakan_sebelumnya) && $riwayat->alasan_penolakan_sebelumnya && $riwayat->alasan_penolakan_sebelumnya !== 'Permohonan disetujui.')
                             <li class="text-sm text-gray-700">
-                                • {{ $riwayat->catatan }}
+                                • {{ $riwayat->alasan_penolakan_sebelumnya }}
+                            </li>
+                            @elseif(isset($riwayat->alasan_penolakan_sebelumnya) && $riwayat->alasan_penolakan_sebelumnya === 'Permohonan disetujui.')
+                            <li class="text-sm text-gray-700">
+                                • {{ $riwayat->alasan_penolakan_sebelumnya }}
                             </li>
                             @else
                             <li class="text-sm text-gray-400 italic">

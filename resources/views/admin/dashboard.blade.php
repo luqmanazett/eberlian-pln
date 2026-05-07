@@ -4,79 +4,91 @@
 @section('header-title', 'SIPEL PLN')
 
 @section('content')
-<div class="space-y-4 pb-20">
+
+{{-- Background Hijau Gradient --}}
+<div style="margin: -16px -16px 0 -16px; padding: 16px 16px 0 16px; background: linear-gradient(to bottom, #059669 0%, #D1FAE5 40%, #F5F7FA 100%);">
     
-    {{-- Welcome Card --}}
-    <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
-        <h2 class="text-xl font-bold text-gray-800">Selamat datang, Admin 👋</h2>
-        <p class="text-sm text-gray-500 mt-1">Pengelolaan Permohonan PLN</p>
+    {{-- Welcome Card - UJUNG TAJAM --}}
+    <div style="background: white; border-radius: 0px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); display: flex; align-items: stretch; overflow: hidden;">
+        
+        {{-- Teks Welcome --}}
+        <div style="flex: 1; padding: 16px;">
+            <h2 style="font-size: 20px; font-weight: 700; color: #1F2937; margin: 0 0 4px 0;">
+                Halo, Admin PLN 
+            </h2>
+            <p style="font-size: 14px; color: #6B7280; margin: 0;">
+                Selamat datang kembali
+            </p>
+        </div>
+        
+        {{-- Ilustrasi logo-ilustrasi3.png - Setinggi Card --}}
+        <div style="display: flex; align-items: center; justify-content: center; background: linear-gradient(to left, #D1FAE5, white); padding: 0 12px;">
+            <img src="{{ asset('images/logo-ilustrasi3.png') }}" 
+                 alt="PLN" 
+                 style="height: 80px; width: auto; display: block;"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div style="display: none; align-items: center; gap: 3px;">
+                <span style="font-size: 40px;">👨‍🔧</span>
+                <span style="font-size: 30px;">⚡</span>
+            </div>
+        </div>
+        
     </div>
     
-    {{-- Ringkasan - Grid 2x2 --}}
+</div>
+
+{{-- Content Normal --}}
+<div class="space-y-4 mt-4">
+    
+    {{-- Ringkasan Hari Ini --}}
     <div>
-        <h3 class="font-semibold text-gray-800 mb-3">Ringkasan</h3>
+        <h3 class="font-semibold text-gray-800 mb-3 text-base">Ringkasan Hari Ini</h3>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
             
-            {{-- Semua (Total) --}}
-            <div style="background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid #f0f0f0;">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <div style="width: 40px; height: 40px; background: #E0F2F2; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                        <span style="color: #008080; font-size: 20px;">📄</span>
-                    </div>
-                    <div>
-                        <p style="font-size: 24px; font-weight: bold; color: #1F2937; margin: 0;">{{ $stats['total'] }}</p>
-                        <p style="font-size: 12px; color: #6B7280; margin: 0;">Semua</p>
-                    </div>
+            {{-- Total Permohonan --}}
+            <div style="background: white; border-radius: 12px; padding: 12px 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.04); border: 1px solid #f0f0f0; display: flex; align-items: center; gap: 12px;">
+                <div style="width: 40px; height: 40px; background: #DBEAFE; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #2563EB; font-size: 20px;">📊</div>
+                <div>
+                    <p style="font-size: 20px; font-weight: bold; color: #1F2937; margin: 0;">{{ $stats['total'] ?? 0 }}</p>
+                    <p style="font-size: 12px; color: #6B7280; margin: 0;"> Permohonan</p>
                 </div>
             </div>
             
             {{-- Pending --}}
-            <div style="background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid #f0f0f0;">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <div style="width: 40px; height: 40px; background: #FEF3C7; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                        <span style="color: #D97706; font-size: 20px;">⏳</span>
-                    </div>
-                    <div>
-                        <p style="font-size: 24px; font-weight: bold; color: #D97706; margin: 0;">{{ $stats['pending'] }}</p>
-                        <p style="font-size: 12px; color: #6B7280; margin: 0;">Pending</p>
-                    </div>
+            <div style="background: white; border-radius: 12px; padding: 12px 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.04); border: 1px solid #f0f0f0; display: flex; align-items: center; gap: 12px;">
+                <div style="width: 40px; height: 40px; background: #FEF3C7; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #D97706; font-size: 20px;">⏳</div>
+                <div>
+                    <p style="font-size: 20px; font-weight: bold; color: #D97706; margin: 0;">{{ $stats['pending'] ?? 0 }}</p>
+                    <p style="font-size: 12px; color: #6B7280; margin: 0;">Menunggu </p>
                 </div>
             </div>
             
-            {{-- Approved --}}
-            <div style="background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid #f0f0f0;">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <div style="width: 40px; height: 40px; background: #D1FAE5; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                        <span style="color: #059669; font-size: 20px;">✅</span>
-                    </div>
-                    <div>
-                        <p style="font-size: 24px; font-weight: bold; color: #059669; margin: 0;">{{ $stats['approved'] }}</p>
-                        <p style="font-size: 12px; color: #6B7280; margin: 0;">Approved</p>
-                    </div>
+            {{-- Disetujui --}}
+            <div style="background: white; border-radius: 12px; padding: 12px 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.04); border: 1px solid #f0f0f0; display: flex; align-items: center; gap: 12px;">
+                <div style="width: 40px; height: 40px; background: #D1FAE5; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #059669; font-size: 20px;">✅</div>
+                <div>
+                    <p style="font-size: 20px; font-weight: bold; color: #059669; margin: 0;">{{ $stats['approved'] ?? 0 }}</p>
+                    <p style="font-size: 12px; color: #6B7280; margin: 0;">Disetujui</p>
                 </div>
             </div>
             
-            {{-- Rejected --}}
-            <div style="background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid #f0f0f0;">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <div style="width: 40px; height: 40px; background: #FEE2E2; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                        <span style="color: #DC2626; font-size: 20px;">❌</span>
-                    </div>
-                    <div>
-                        <p style="font-size: 24px; font-weight: bold; color: #DC2626; margin: 0;">{{ $stats['rejected'] }}</p>
-                        <p style="font-size: 12px; color: #6B7280; margin: 0;">Rejected</p>
-                    </div>
+            {{-- Ditolak --}}
+            <div style="background: white; border-radius: 12px; padding: 12px 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.04); border: 1px solid #f0f0f0; display: flex; align-items: center; gap: 12px;">
+                <div style="width: 40px; height: 40px; background: #FEE2E2; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #DC2626; font-size: 20px;">❌</div>
+                <div>
+                    <p style="font-size: 20px; font-weight: bold; color: #DC2626; margin: 0;">{{ $stats['rejected'] ?? 0 }}</p>
+                    <p style="font-size: 12px; color: #6B7280; margin: 0;"> Ditolak</p>
                 </div>
             </div>
             
         </div>
     </div>
     
-    {{-- Grafik Pie - HANYA ADMIN UTAMA (LEVEL 1) --}}
+    {{-- Permohonan per Jenis - HANYA ADMIN UTAMA --}}
     @if(Auth::user()->admin_level == 1)
     <div>
-        <h3 class="font-semibold text-gray-800 mb-3">Permohonan Berdasarkan Jenis</h3>
-        <div style="background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid #f0f0f0;">
+        <h3 class="font-semibold text-gray-800 mb-3 text-base">Permohonan per Jenis</h3>
+        <div style="background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.04); border: 1px solid #f0f0f0;">
             <div style="display: flex; align-items: center; gap: 16px;">
                 {{-- Grafik Pie --}}
                 <div style="flex: 1; min-width: 120px;">
@@ -98,28 +110,28 @@
                     
                     {{-- Pasang Baru --}}
                     <div style="display: flex; align-items: center; gap: 8px;">
-                        <span style="width: 12px; height: 12px; border-radius: 50%; background: #4ADE80;"></span>
+                        <span style="width: 12px; height: 12px; border-radius: 50%; background: #EAB308;"></span>
                         <div>
                             <p style="font-size: 14px; font-weight: 500; color: #1F2937; margin: 0;">Pasang Baru</p>
-                            <p style="font-size: 12px; color: #6B7280; margin: 0;">{{ $pasangBaru }} ({{ $pbPersen }}%)</p>
+                            <p style="font-size: 12px; color: #6B7280; margin: 0;">{{ $pbPersen }}%</p>
                         </div>
                     </div>
                     
                     {{-- Tambah Daya --}}
                     <div style="display: flex; align-items: center; gap: 8px;">
-                        <span style="width: 12px; height: 12px; border-radius: 50%; background: #166534;"></span>
+                        <span style="width: 12px; height: 12px; border-radius: 50%; background: #22C55E;"></span>
                         <div>
                             <p style="font-size: 14px; font-weight: 500; color: #1F2937; margin: 0;">Tambah Daya</p>
-                            <p style="font-size: 12px; color: #6B7280; margin: 0;">{{ $tambahDaya }} ({{ $tdPersen }}%)</p>
+                            <p style="font-size: 12px; color: #6B7280; margin: 0;">{{ $tdPersen }}%</p>
                         </div>
                     </div>
                     
-                    {{-- Peningkatan Keandalan --}}
+                    {{-- Keandalan --}}
                     <div style="display: flex; align-items: center; gap: 8px;">
-                        <span style="width: 12px; height: 12px; border-radius: 50%; background: #A3E635;"></span>
+                        <span style="width: 12px; height: 12px; border-radius: 50%; background: #EF4444;"></span>
                         <div>
-                            <p style="font-size: 14px; font-weight: 500; color: #1F2937; margin: 0;">Peningkatan Keandalan</p>
-                            <p style="font-size: 12px; color: #6B7280; margin: 0;">{{ $peningkatan }} ({{ $pkPersen }}%)</p>
+                            <p style="font-size: 14px; font-weight: 500; color: #1F2937; margin: 0;">Keandalan</p>
+                            <p style="font-size: 12px; color: #6B7280; margin: 0;">{{ $pkPersen }}%</p>
                         </div>
                     </div>
                 </div>
@@ -131,29 +143,23 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const canvas = document.getElementById('pieChart');
-            if (canvas) {
-                const ctx = canvas.getContext('2d');
+            const pieCanvas = document.getElementById('pieChart');
+            if (pieCanvas) {
+                const ctx = pieCanvas.getContext('2d');
                 new Chart(ctx, {
                     type: 'doughnut',
                     data: {
-                        labels: ['Pasang Baru', 'Tambah Daya', 'Peningkatan Keandalan'],
+                        labels: ['Pasang Baru', 'Tambah Daya', 'Keandalan'],
                         datasets: [{
-                            data: [
-                                {{ $pasangBaru }},
-                                {{ $tambahDaya }},
-                                {{ $peningkatan }}
-                            ],
-                            backgroundColor: ['#4ADE80', '#166534', '#A3E635'],
+                            data: [{{ $pasangBaru }}, {{ $tambahDaya }}, {{ $peningkatan }}],
+                            backgroundColor: ['#EAB308', '#22C55E', '#EF4444'],
                             borderWidth: 0
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: true,
-                        plugins: {
-                            legend: { display: false }
-                        },
+                        plugins: { legend: { display: false } },
                         cutout: '65%'
                     }
                 });
@@ -166,7 +172,7 @@
     <div>
         <div class="flex items-center justify-between mb-3">
             <h3 class="font-semibold text-gray-800 text-base">Permohonan Terbaru</h3>
-            <a href="{{ route('admin.verifikasi.index', ['status' => 'pending']) }}" class="text-sm font-medium text-pln-primary">Lihat semua →</a>
+            <a href="{{ route('admin.verifikasi.index', ['status' => 'pending']) }}" class="text-sm font-medium" style="color: #059669;">Lihat semua →</a>
         </div>
         
         @php
@@ -210,25 +216,4 @@
     </div>
     
 </div>
-@endsection
-
-@section('bottom-nav')
-<a href="{{ route('admin.dashboard') }}" class="nav-item active">
-    <span>🏠</span>
-    <span>Dashboard</span>
-</a>
-<a href="{{ route('admin.verifikasi.index') }}" class="nav-item">
-    <span>📄</span>
-    <span>Permohonan</span>
-</a>
-@if(Auth::user()->admin_level == 1)
-<a href="{{ route('admin.log.index') }}" class="nav-item">
-    <span>📊</span>
-    <span>Laporan</span>
-</a>
-@endif
-<a href="{{ route('profile.edit') }}" class="nav-item">
-    <span>👤</span>
-    <span>Profil</span>
-</a>
 @endsection

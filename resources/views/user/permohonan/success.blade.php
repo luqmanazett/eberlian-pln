@@ -14,7 +14,7 @@
     {{-- Success Message --}}
     <h2 class="text-2xl font-bold text-gray-800 mb-3">Permohonan Berhasil Diajukan!</h2>
     <p class="text-gray-600 mb-6">
-        Nomor Permohonan: <strong>#{{ str_pad($permohonan->id, 6, '0', STR_PAD_LEFT) }}</strong>
+        ID Register: <strong>{{ $permohonan->id_register ?? ('PMH-' . $permohonan->id) }}</strong>
     </p>
     <p class="text-gray-500 text-sm mb-8">
         Permohonan Anda sedang dalam proses verifikasi. 

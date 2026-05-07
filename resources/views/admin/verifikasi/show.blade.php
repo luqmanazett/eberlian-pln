@@ -28,8 +28,8 @@
         <div class="flex items-center justify-between">
             {{-- Kiri: Kode PMH & Jenis Permohonan --}}
             <div>
-                <span class="text-xs text-gray-400 uppercase tracking-wider font-medium">Kode PMH</span>
-                <p class="font-bold text-gray-800 text-lg mt-1">PMH-{{ $permohonan->id }}</p>
+                <span class="text-xs text-gray-400 uppercase tracking-wider font-medium">ID Register</span>
+                <p class="font-bold text-gray-800 text-lg mt-1">{{ $permohonan->id_register ?? ('PMH-' . $permohonan->id) }}</p>
                 <p class="text-sm text-gray-500 mt-1">
                     @if($permohonan->jenis_permohonan == 'pasang_baru') 
                         <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">🔌 Pasang Baru</span>
@@ -80,36 +80,44 @@
                 </div>
             </div>
             
-            {{-- IDPEL & No. Telepon --}}
+            {{-- ID Register & IDPEL --}}
             <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-100">
+                <div>
+                    <span class="text-xs text-gray-400 uppercase tracking-wider font-medium">ID Register</span>
+                    <p class="font-semibold text-gray-800 mt-1 text-sm">{{ $permohonan->id_register ?? ('PMH-' . $permohonan->id) }}</p>
+                </div>
                 <div>
                     <span class="text-xs text-gray-400 uppercase tracking-wider font-medium">IDPEL</span>
                     <p class="font-semibold text-gray-800 mt-1 text-sm">{{ $permohonan->idpel ?? '-' }}</p>
                 </div>
+            </div>
+            
+            {{-- No. Telepon & ULP --}}
+            <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-100">
                 <div>
                     <span class="text-xs text-gray-400 uppercase tracking-wider font-medium">No. Telepon</span>
                     <p class="font-semibold text-gray-800 mt-1 text-sm">{{ $permohonan->no_telepon }}</p>
                 </div>
-            </div>
-            
-            {{-- ULP & Diajukan oleh --}}
-            <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-100">
                 <div>
                     <span class="text-xs text-gray-400 uppercase tracking-wider font-medium">ULP</span>
                     <p class="font-semibold text-gray-800 mt-1 text-sm">{{ $permohonan->ulp }}</p>
                 </div>
+            </div>
+            
+            {{-- Diajukan oleh & Alamat Gardu --}}
+            <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-100">
                 <div>
                     <span class="text-xs text-gray-400 uppercase tracking-wider font-medium">Diajukan oleh</span>
                     <p class="font-semibold text-gray-800 mt-1 text-sm">{{ $permohonan->user->name ?? '-' }}</p>
                 </div>
-            </div>
-            
-            {{-- Alamat Gardu & Nama Gardu --}}
-            <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-100">
                 <div>
                     <span class="text-xs text-gray-400 uppercase tracking-wider font-medium">Alamat Gardu</span>
                     <p class="font-semibold text-gray-800 mt-1 text-sm">{{ $permohonan->alamat_gardu }}</p>
                 </div>
+            </div>
+            
+            {{-- Nama Gardu --}}
+            <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-100">
                 <div>
                     <span class="text-xs text-gray-400 uppercase tracking-wider font-medium">Nama Gardu</span>
                     <p class="font-semibold text-gray-800 mt-1 text-sm">{{ $permohonan->nama_gardu }}</p>
@@ -144,7 +152,7 @@
                         <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                     </div>
                     <div>
-                        <p class="font-medium text-gray-800 text-sm">BA Lahan</p>
+                        <p class="font-medium text-gray-800 text-sm">BA Lingkungan (Penilaian Dampak)</p>
                         @if($permohonan->ba_lahan_type == 'upload')
                             <span class="text-xs text-gray-400">File Upload</span>
                         @elseif($permohonan->ba_lahan_type == 'form')
@@ -164,10 +172,10 @@
                         <span class="text-xs text-yellow-600 bg-yellow-50 px-2 py-1 rounded-full">⚠️ File tidak ditemukan</span>
                         @endif
                     @elseif($permohonan->ba_lahan_type == 'form' && $permohonan->ba_lahan_data)
-                        <button onclick="toggleBaLahan()" 
-                                class="w-9 h-9 flex items-center justify-center rounded-full bg-white border border-gray-200 hover:bg-pln-primary hover:text-white hover:border-pln-primary transition group" title="Lihat Form">
+                        <a href="{{ route('admin.export.permohonan.ba-lahan', $permohonan->id) }}" target="_blank"
+                                class="w-9 h-9 flex items-center justify-center rounded-full bg-white border border-gray-200 hover:bg-pln-primary hover:text-white hover:border-pln-primary transition group" title="Lihat Dokumen Resmi">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                        </button>
+                        </a>
                     @else
                         <span class="text-xs text-gray-400">-</span>
                     @endif
@@ -210,7 +218,7 @@
                         <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                     </div>
                     <div>
-                        <p class="font-medium text-gray-800 text-sm">BA Lingkungan</p>
+                        <p class="font-medium text-gray-800 text-sm">BA Lahan (Serah Terima Gardu)</p>
                         @if($permohonan->ba_lingkungan_type == 'upload')
                             <span class="text-xs text-gray-400">File Upload</span>
                         @elseif($permohonan->ba_lingkungan_type == 'form')
@@ -230,10 +238,10 @@
                         <span class="text-xs text-yellow-600 bg-yellow-50 px-2 py-1 rounded-full">⚠️ File tidak ditemukan</span>
                         @endif
                     @elseif($permohonan->ba_lingkungan_type == 'form' && $permohonan->ba_lingkungan_data)
-                        <button onclick="toggleBaLingkungan()" 
-                                class="w-9 h-9 flex items-center justify-center rounded-full bg-white border border-gray-200 hover:bg-pln-primary hover:text-white hover:border-pln-primary transition group" title="Lihat Form">
+                        <a href="{{ route('admin.export.permohonan.ba-lingkungan', $permohonan->id) }}" target="_blank"
+                                class="w-9 h-9 flex items-center justify-center rounded-full bg-white border border-gray-200 hover:bg-pln-primary hover:text-white hover:border-pln-primary transition group" title="Lihat Dokumen Resmi">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                        </button>
+                        </a>
                     @else
                         <span class="text-xs text-gray-400">-</span>
                     @endif
@@ -363,10 +371,16 @@
   {{-- Export Data --}}
 <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
     <h3 class="font-semibold text-gray-800 mb-3 text-sm">Export Data</h3>
-    <a href="{{ route('admin.export.permohonan', $permohonan->id) }}" 
-       style="display: block; width: 100%; padding: 12px; background: #059669; color: white; text-align: center; border-radius: 12px; font-size: 14px; font-weight: 500; text-decoration: none;">
-        Export Excel
-    </a>
+    <div class="flex flex-col gap-3">
+        <a href="{{ route('admin.export.permohonan.excel', $permohonan->id) }}" 
+           class="w-full py-4 bg-green-600 hover:bg-green-700 text-white text-center rounded-full text-base font-semibold transition-colors" style="background-color: #059669; color: white; display: block;">
+            Export Excel
+        </a>
+        <a href="{{ route('admin.export.permohonan.pdf', $permohonan->id) }}" target="_blank"
+           class="w-full py-4 bg-red-600 hover:bg-red-700 text-white text-center rounded-full text-base font-semibold transition-colors" style="background-color: #DC2626; color: white; display: block;">
+            Export PDF (Detail)
+        </a>
+    </div>
 </div>
 </div>
     {{-- Tanda Tangan --}}
@@ -406,10 +420,10 @@
     @if($permohonan->status == 'pending')
     <div class="flex gap-3">
         <button onclick="openApproveModal()" class="btn btn-success flex-1 rounded-full">
-            ✅ Setujui
+            Setujui
         </button>
         <button onclick="openRejectModal()" class="btn flex-1 rounded-full" style="background: #FEE2E2; color: #991B1B;">
-            ❌ Tolak
+            Tolak
         </button>
     </div>
     @endif
@@ -457,8 +471,8 @@
             <div class="px-6 py-4 space-y-4">
                 
                 @foreach([
-                    'ba_lahan' => ['BA Lahan', false],
-                    'ba_lingkungan' => ['BA Lingkungan', false],
+                    'ba_lahan' => ['BA Lingkungan (Penilaian Dampak)', false],
+                    'ba_lingkungan' => ['BA Lahan (Serah Terima Gardu)', false],
                     'return_agrimen' => ['Written Agreement', false],
                     'imb' => ['IMB', true],
                     'sertifikat_lahan' => ['Sertifikat Lahan', true],

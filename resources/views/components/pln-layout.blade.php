@@ -56,7 +56,7 @@
         
         /*Adminn Header*/
        .app-header {
-    background: var(--pln-primary);  /* #008080 - Hijau Tosca */
+    background: #008080;  /* Hijau Tosca yang lebih gelap */
     color: white;
     padding: 12px 16px;
     position: sticky;
@@ -523,19 +523,19 @@
         </span>
     </a>
     
-    {{-- Laporan - HANYA ADMIN UTAMA (LEVEL 1) --}}
-    @if(Auth::user()->admin_level == 1)
-    <a href="{{ route('admin.log.index') }}" class="nav-item {{ request()->routeIs('admin.log.*') ? 'active' : '' }}">
-        <span style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
-            @if(file_exists(public_path('images/bottom-nav/admin/laporan.png')))
-            <img src="{{ asset('images/bottom-nav/admin/laporan.png') }}" alt="Laporan" style="width: 20px; height: 20px; object-fit: contain;">
-            @else
-            <span style="font-size: 20px;">📊</span>
-            @endif
-            <span style="font-size: 11px;">Laporan</span>
-        </span>
-    </a>
-    @endif
+    {{-- Eksport Data - HANYA ADMIN UTAMA (LEVEL 1) --}}
+@if(Auth::user()->admin_level == 1)
+<a href="{{ route('admin.export.index') }}" class="nav-item {{ request()->routeIs('admin.export.*') ? 'active' : '' }}">
+    <span style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
+        @if(file_exists(public_path('images/bottom-nav/export.png')))
+        <img src="{{ asset('images/bottom-nav/export.png') }}" alt="Eksport Data" style="width: 20px; height: 20px; object-fit: contain;">
+        @else
+        <span style="font-size: 20px;">📥</span>
+        @endif
+        <span style="font-size: 11px;">Eksport Data</span>
+    </span>
+</a>
+@endif
     
     {{-- Profil --}}
     <a href="{{ route('profile.edit') }}" class="nav-item {{ request()->routeIs('profile.*') ? 'active' : '' }}">

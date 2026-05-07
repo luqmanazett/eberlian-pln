@@ -79,11 +79,11 @@ class FormPermohonan extends Component
     public $showIdpelField = false;
     public $needStep3 = false; // Hanya perlu Step 3 jika ada yang pakai form
     public function mount($jenis = 'pasang_baru')
-{
-    $this->jenis_permohonan = $jenis;
-    $this->showIdpelField = in_array($jenis, ['tambah_daya', 'peningkatan_keandalan']);
-    $this->checkNeedStep3(); // 👈 Tambahkan ini
-}
+    {
+        $this->jenis_permohonan = $jenis;
+        $this->showIdpelField = in_array($jenis, ['tambah_daya', 'peningkatan_keandalan']);
+        $this->checkNeedStep3(); 
+    }
     
     public function updatedUlp($value)
     {
@@ -178,8 +178,10 @@ public function updatedBaLingkunganOption($value)
             'nama_gardu' => 'required|string',
         ];
         
-        if ($this->showIdpelField && $this->idpel) {
-            $rules['idpel'] = 'nullable|string|max:50';
+        if ($this->jenis_permohonan == 'tambah_daya') {
+            $rules['idpel'] = 'required|string|max:50'; // IDPEL Wajib
+        } elseif ($this->jenis_permohonan == 'peningkatan_keandalan') {
+            $rules['idpel'] = 'nullable|string|max:50'; // Peningkatan Keandalan
         }
         
         $this->validate($rules);
@@ -228,12 +230,22 @@ public function updatedBaLingkunganOption($value)
         $this->validate($rules, $messages);
     }
     
-    private function generateIdpel()
+    
+    
+    private function generateIdRegister()
     {
-        $prefix = 'PB';
+        $prefix = '';
+        if ($this->jenis_permohonan == 'pasang_baru') {
+            $prefix = 'PB';
+        } elseif ($this->jenis_permohonan == 'tambah_daya') {
+            $prefix = 'TD';
+        } else {
+            $prefix = 'PK';
+        }
+        
         $date = date('Ymd');
         
-        $countToday = Permohonan::where('jenis_permohonan', 'pasang_baru')
+        $countToday = Permohonan::where('jenis_permohonan', $this->jenis_permohonan)
             ->whereDate('created_at', today())
             ->count();
         
@@ -241,7 +253,7 @@ public function updatedBaLingkunganOption($value)
         
         return $prefix . $date . $sequence;
     }
-    
+
    public function submit()
 {
     // DEBUG: Log TTD
@@ -291,11 +303,11 @@ public function updatedBaLingkunganOption($value)
             $baLingkunganData = json_encode($this->ba_lingkungan_form);
         }
         
-        // Generate IDPEL
-        $finalIdpel = $this->idpel;
-        if ($this->jenis_permohonan == 'pasang_baru') {
-            $finalIdpel = $this->generateIdpel();
-        }
+        // Final IDPEL
+        $finalIdpel = $this->jenis_permohonan == 'pasang_baru' ? null : $this->idpel;
+        
+        // Generate ID Register
+        $finalIdRegister = $this->generateIdRegister();
         
         // TTD - Placeholder
         $placeholder = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
@@ -305,6 +317,7 @@ public function updatedBaLingkunganOption($value)
         $permohonan = Permohonan::create([
             'user_id' => Auth::id(),
             'jenis_permohonan' => $this->jenis_permohonan,
+            'id_register' => $finalIdRegister,
             'idpel' => $finalIdpel,
             'no_ktp' => $this->no_ktp,
             'nama_pelanggan' => $this->nama_pelanggan,

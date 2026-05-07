@@ -4,7 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\VerifikasiController;
-use App\Http\Controllers\Admin\LogController;
+
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\NotifikasiController as AdminNotifikasiController;
 use App\Http\Controllers\Management\DashboardController as ManagementDashboardController;
@@ -76,7 +76,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/verifikasi/{id}/history-perbaikan', [VerifikasiController::class, 'showHistoryPerbaikan'])->name('verifikasi.history-perbaikan');
     
     // Export Permohonan Individual
-    Route::get('/export/permohonan/{id}', [VerifikasiController::class, 'exportExcel'])->name('export.permohonan');
+    Route::get('/export/permohonan/{id}/excel', [VerifikasiController::class, 'exportExcel'])->name('export.permohonan.excel');
+    Route::get('/export/permohonan/{id}/pdf', [VerifikasiController::class, 'exportPdf'])->name('export.permohonan.pdf');
+    Route::get('/export/permohonan/{id}/ba-lahan', [VerifikasiController::class, 'exportBaLahanPdf'])->name('export.permohonan.ba-lahan');
+    Route::get('/export/permohonan/{id}/ba-lingkungan', [VerifikasiController::class, 'exportBaLingkunganPdf'])->name('export.permohonan.ba-lingkungan');
    
     
     // Notifikasi Admin
@@ -86,9 +89,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     
     // ===== FITUR HANYA ADMIN UTAMA (LEVEL 1) =====
     Route::middleware(['admin.level:1'])->group(function () {
-        Route::get('/log', [LogController::class, 'index'])->name('log.index');
-        Route::get('/log/export', [LogController::class, 'export'])->name('log.export');
-        
+        Route::get('/export-data', [AdminDashboardController::class, 'showExportForm'])->name('export.index');
         Route::get('/export', [AdminDashboardController::class, 'export'])->name('export');
         
         Route::resource('user', UserController::class)->except(['show']);

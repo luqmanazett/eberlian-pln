@@ -5,12 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Permohonan;
 use App\Models\RiwayatPerbaikan;
-use App\Models\ActivityLog;
+
 use App\Exports\PermohonanExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class DashboardController extends Controller
 {
@@ -48,7 +49,10 @@ class DashboardController extends Controller
     
     return view('admin.dashboard', compact('stats', 'chartData', 'jenisData', 'recentPermohonans'));
 }
-    
+    public function showExportForm()
+    {
+        return view('admin.export.index');
+    }
     public function export(Request $request)
     {
         $startDate = $request->start_date;
@@ -56,18 +60,31 @@ class DashboardController extends Controller
         $status = $request->status;
         $jenis = $request->jenis;
         
+        $format = $request->format ?? 'excel';
+        
+        if ($format == 'pdf') {
+            $query = Permohonan::query()->orderBy('tanggal_upload', 'desc');
+            
+            if ($startDate && $endDate) {
+                $query->whereBetween('tanggal_upload', [$startDate, $endDate]);
+            }
+            if ($status) {
+                $query->where('status', $status);
+            }
+            if ($jenis) {
+                $query->where('jenis_permohonan', $jenis);
+            }
+            
+            $permohonans = $query->get();
+            $filename = 'rekap_permohonan_' . date('Y-m-d') . '.pdf';
+            
+            $pdf = Pdf::loadView('admin.export.pdf', compact('permohonans', 'startDate', 'endDate', 'status', 'jenis'))
+                      ->setPaper('a4', 'landscape');
+                      
+            return $pdf->download($filename);
+        }
+        
         $filename = 'rekap_permohonan_' . date('Y-m-d') . '.xlsx';
-        
-        // Log Aktivitas
-        ActivityLog::create([
-            'user_id' => Auth::id(),
-            'role' => 'admin',
-            'action' => 'export_excel',
-            'description' => "Admin mengexport data permohonan",
-            'ip_address' => request()->ip(),
-            'user_agent' => request()->userAgent(),
-        ]);
-        
         return Excel::download(new PermohonanExport($startDate, $endDate, $status, $jenis), $filename);
     }
 }

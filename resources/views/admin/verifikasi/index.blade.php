@@ -7,26 +7,40 @@
 <div class="space-y-4 pb-20" style="max-width: 360px; margin: 0 auto;">
     
    {{-- Search Bar + Tombol Search --}}
-<form method="GET" action="{{ route('admin.verifikasi.index') }}" class="flex items-center gap-2">
-    <input type="text" name="search" value="{{ request('search') }}" 
-           class="flex-1 px-4 py-3.5 bg-white border border-gray-200 rounded-2xl text-sm shadow-sm" 
-           placeholder="Cari permohonan...">
+<form method="GET" action="{{ route('admin.verifikasi.index') }}" class="flex flex-col gap-2">
+    <div class="flex items-center gap-2">
+        <input type="text" name="search" value="{{ request('search') }}" 
+               class="flex-1 px-4 py-3.5 bg-white border border-gray-200 rounded-2xl text-sm shadow-sm" 
+               placeholder="Cari permohonan...">
+        
+        <button type="submit" class="w-12 h-12 flex-shrink-0 bg-white border border-gray-200 rounded-2xl flex items-center justify-center shadow-sm">
+            @if(file_exists(public_path('images/cari.png')))
+            <img src="{{ asset('images/cari.png') }}" alt="Cari" style="width: 22px; height: 22px;">
+            @else
+            <span class="text-gray-400 text-lg">🔍</span>
+            @endif
+        </button>
+    </div>
+
+    {{-- Filter Dropdowns (Jenis & Sort) --}}
+    <div style="display: flex; gap: 8px; width: 100%;">
+        <select name="jenis" onchange="this.form.submit()" style="flex: 1; min-width: 0; font-size: 13px; padding-top: 10px; padding-bottom: 10px; background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%236B7280%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 0.65rem auto;" class="px-3 bg-white border border-gray-200 rounded-xl shadow-sm text-gray-600 outline-none focus:border-[#46C2B3] focus:ring-1 focus:ring-[#46C2B3] appearance-none">
+            <option value="">Semua Jenis</option>
+            <option value="pasang_baru" {{ request('jenis') == 'pasang_baru' ? 'selected' : '' }}>Pasang Baru</option>
+            <option value="tambah_daya" {{ request('jenis') == 'tambah_daya' ? 'selected' : '' }}>Tambah Daya</option>
+            <option value="peningkatan_keandalan" {{ request('jenis') == 'peningkatan_keandalan' ? 'selected' : '' }}>Peningkatan Keandalan</option>
+        </select>
+        
+        <select name="sort" onchange="this.form.submit()" style="flex: 1; min-width: 0; font-size: 13px; padding-top: 10px; padding-bottom: 10px; background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%236B7280%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'); background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 0.65rem auto;" class="px-3 bg-white border border-gray-200 rounded-xl shadow-sm text-gray-600 outline-none focus:border-[#46C2B3] focus:ring-1 focus:ring-[#46C2B3] appearance-none">
+            <option value="terbaru" {{ request('sort') == 'terbaru' ? 'selected' : '' }}>Waktu: Terbaru</option>
+            <option value="terlama" {{ request('sort') == 'terlama' ? 'selected' : '' }}>Waktu: Terlama</option>
+        </select>
+    </div>
     
     {{-- Pertahankan filter status jika ada --}}
     @if(request('status'))
     <input type="hidden" name="status" value="{{ request('status') }}">
     @endif
-    @if(request('jenis'))
-    <input type="hidden" name="jenis" value="{{ request('jenis') }}">
-    @endif
-    
-    <button type="submit" class="w-12 h-12 bg-white border border-gray-200 rounded-2xl flex items-center justify-center shadow-sm">
-        @if(file_exists(public_path('images/cari.png')))
-        <img src="{{ asset('images/cari.png') }}" alt="Cari" style="width: 22px; height: 22px;">
-        @else
-        <span class="text-gray-400 text-lg">🔍</span>
-        @endif
-    </button>
 </form>
     
     {{-- Tab Filter - Pill Style (dengan margin top) --}}
@@ -41,7 +55,7 @@
            class="flex-shrink-0 px-5 py-2.5 rounded-full text-sm font-medium transition-all
                   {{ request('status') == 'pending' ? 'text-white shadow-md' : 'bg-white border border-gray-200 text-gray-600' }}"
                   style="{{ request('status') == 'pending' ? 'background: #46C2B3;' : '' }}">
-            Pending
+            Menunggu
         </a>
         <a href="{{ route('admin.verifikasi.index', array_merge(request()->except('status'), ['status' => 'approved'])) }}" 
            class="flex-shrink-0 px-5 py-2.5 rounded-full text-sm font-medium transition-all
@@ -71,7 +85,7 @@
             <div class="pl-2">
                 {{-- Header: ID + Status Pill --}}
                 <div class="flex items-center justify-between mb-2">
-                    <span class="text-xs font-medium text-gray-500">#PMH-{{ str_pad($item->id, 6, '0', STR_PAD_LEFT) }}</span>
+                    <span class="text-xs font-medium text-gray-500">ID Register: {{ $item->id_register ?? ('PMH-' . $item->id) }}</span>
                     
                     @if($item->status == 'pending')
                         <span class="px-3 py-1 rounded-full text-xs font-medium" style="background: #FEF3C7; color: #92400E;">Menunggu</span>
@@ -133,26 +147,4 @@
     
 </div>
 @endsection
-
-@section('bottom-nav')
-<a href="{{ route('admin.dashboard') }}" class="nav-item">
-    <span>🏠</span>
-    <span>Beranda</span>
-</a>
-<a href="{{ route('admin.verifikasi.index') }}" class="nav-item active">
-    <span>📄</span>
-    <span>Permohonan</span>
-</a>
-<a href="{{ route('admin.user.index') }}" class="nav-item">
-    <span>👥</span>
-    <span>Pengguna</span>
-</a>
-<a href="{{ route('admin.log.index') }}" class="nav-item">
-    <span>📊</span>
-    <span>Log</span>
-</a>
-<a href="{{ route('profile.edit') }}" class="nav-item">
-    <span>👤</span>
-    <span>Profil</span>
-</a>
-@endsection
+

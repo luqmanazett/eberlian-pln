@@ -11,6 +11,7 @@ use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class VerifikasiController extends Controller
 {
@@ -39,7 +40,8 @@ class VerifikasiController extends Controller
             $query->whereBetween('tanggal_upload', [$request->start_date, $request->end_date]);
         }
         
-        $permohonans = $query->orderBy('created_at', 'desc')->paginate(10);
+        $sortOrder = $request->sort == 'terlama' ? 'asc' : 'desc';
+        $permohonans = $query->orderBy('created_at', $sortOrder)->paginate(10);
         
         $stats = [
             'total' => Permohonan::count(),
@@ -74,7 +76,7 @@ class VerifikasiController extends Controller
                 'versi_ke' => $permohonan->jumlah_perbaikan + 1,
                 'dokumen_yang_diperbaiki' => ['semua_dokumen'],
                 'dokumen_yang_ditolak' => null,
-                'alasan_penolakan_sebelumnya' => $request->catatan_admin ?? 'Permohonan disetujui.',
+                'alasan_penolakan_sebelumnya' => $request->filled('catatan_admin') ? $request->catatan_admin : 'Permohonan disetujui.',
                 'status_perbaikan' => 'approved',
                 'submitted_at' => now(),
                 'reviewed_at' => now(),
@@ -424,46 +426,46 @@ public function exportExcel($id)
     {
         $permohonan = Permohonan::with('user')->findOrFail($id);
         
-        $html = '<h1 style="text-align: center; color: #46C2B3;">SIPEL PLN</h1>';
-        $html .= '<h2 style="text-align: center;">Detail Permohonan</h2>';
-        $html .= '<hr>';
-        $html .= '<p><strong>No Permohonan:</strong> PMH-' . str_pad($permohonan->id, 6, '0', STR_PAD_LEFT) . '</p>';
-        $html .= '<p><strong>Nama Pelanggan:</strong> ' . $permohonan->nama_pelanggan . '</p>';
-        $html .= '<p><strong>Jenis Permohonan:</strong> ' . ucwords(str_replace('_', ' ', $permohonan->jenis_permohonan)) . '</p>';
-        $html .= '<p><strong>No KTP:</strong> ' . $permohonan->no_ktp . '</p>';
-        $html .= '<p><strong>IDPEL:</strong> ' . ($permohonan->idpel ?? '-') . '</p>';
-        $html .= '<p><strong>No Telepon:</strong> ' . $permohonan->no_telepon . '</p>';
-        $html .= '<p><strong>ULP:</strong> ' . $permohonan->ulp . '</p>';
-        $html .= '<p><strong>Alamat Gardu:</strong> ' . $permohonan->alamat_gardu . '</p>';
-        $html .= '<p><strong>Nama Gardu:</strong> ' . $permohonan->nama_gardu . '</p>';
-        $html .= '<p><strong>Status:</strong> ' . ucfirst($permohonan->status) . '</p>';
-        $html .= '<p><strong>Tanggal Pengajuan:</strong> ' . $permohonan->created_at->format('d/m/Y H:i') . '</p>';
-        $html .= '<p><strong>Diajukan Oleh:</strong> ' . ($permohonan->user->name ?? '-') . '</p>';
+        $filename = 'permohonan_' . ($permohonan->id_register ?? 'PMH-' . $permohonan->id) . '.pdf';
         
-        if ($permohonan->ba_lahan_type == 'form' && $permohonan->ba_lahan_data) {
-            $html .= '<hr><h3>Data Form BA Lahan</h3><ul>';
-            $data = json_decode($permohonan->ba_lahan_data, true);
-            foreach ($data as $key => $value) {
-                $label = ucwords(str_replace('_', ' ', $key));
-                $val = is_array($value) ? ($value ? 'Ya' : 'Tidak') : $value;
-                $html .= '<li><strong>' . $label . ':</strong> ' . $val . '</li>';
-            }
-            $html .= '</ul>';
-        }
+        $pdf = Pdf::loadView('admin.export.pdf', [
+            'permohonans' => [$permohonan],
+            'startDate' => null,
+            'endDate' => null,
+            'status' => null,
+            'jenis' => null
+        ])->setPaper('a4', 'portrait');
         
-        if ($permohonan->ba_lingkungan_type == 'form' && $permohonan->ba_lingkungan_data) {
-            $html .= '<hr><h3>Data Form BA Lingkungan</h3><ul>';
-            $data = json_decode($permohonan->ba_lingkungan_data, true);
-            foreach ($data as $key => $value) {
-                $label = ucwords(str_replace('_', ' ', $key));
-                $val = is_array($value) ? ($value ? 'Ya' : 'Tidak') : $value;
-                $html .= '<li><strong>' . $label . ':</strong> ' . $val . '</li>';
-            }
-            $html .= '</ul>';
-        }
+        return $pdf->download($filename);
+    }
+    
+    /**
+     * Export Berita Acara Lahan (Penilaian Dampak) (PDF)
+     */
+    public function exportBaLahanPdf($id)
+    {
+        $permohonan = Permohonan::with('user')->findOrFail($id);
+        $filename = 'BA_Penilaian_Dampak_' . ($permohonan->id_register ?? 'PMH-' . $permohonan->id) . '.pdf';
         
-        $pdf = \Barryvdh\Snappy\Facades\SnappyPdf::loadHTML($html);
+        $pdf = Pdf::loadView('admin.export.ba_lahan_pdf', [
+            'permohonan' => $permohonan
+        ])->setPaper('a4', 'portrait');
         
-        return $pdf->download('permohonan_PMH-' . str_pad($permohonan->id, 6, '0', STR_PAD_LEFT) . '.pdf');
+        return $pdf->stream($filename);
+    }
+
+    /**
+     * Export Berita Acara Lingkungan (Serah Terima) (PDF)
+     */
+    public function exportBaLingkunganPdf($id)
+    {
+        $permohonan = Permohonan::with('user')->findOrFail($id);
+        $filename = 'BA_Serah_Terima_' . ($permohonan->id_register ?? 'PMH-' . $permohonan->id) . '.pdf';
+        
+        $pdf = Pdf::loadView('admin.export.ba_formal_pdf', [
+            'permohonan' => $permohonan
+        ])->setPaper('a4', 'portrait');
+        
+        return $pdf->stream($filename);
     }
 }
