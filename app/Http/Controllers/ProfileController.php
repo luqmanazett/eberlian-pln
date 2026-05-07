@@ -13,11 +13,31 @@ use Illuminate\View\View;
 class ProfileController extends Controller
 {
     /**
+     * Display the user's profile menu.
+     */
+    public function index(Request $request): View
+    {
+        return view('profile.index', [
+            'user' => $request->user(),
+        ]);
+    }
+
+    /**
      * Display the user's profile form.
      */
     public function edit(Request $request): View
     {
         return view('profile.edit', [
+            'user' => $request->user(),
+        ]);
+    }
+    
+    /**
+     * Display the change password form.
+     */
+    public function password(Request $request): View
+    {
+        return view('profile.password', [
             'user' => $request->user(),
         ]);
     }

@@ -4,7 +4,7 @@
 @section('header-title', 'Detail Permohonan')
 
 @section('content')
-<div class="space-y-4 pb-20">
+<div class="space-y-4 ">
     
     {{-- Header --}}
     <div class="flex items-center gap-3 mb-2">
@@ -382,7 +382,6 @@
         </a>
     </div>
 </div>
-</div>
     {{-- Tanda Tangan --}}
     <div class="bg-white rounded-[48px] p-5 shadow-sm border border-gray-100">
         <h3 class="font-semibold text-gray-800 mb-3">Tanda Tangan</h3>
@@ -394,14 +393,14 @@
                 <div class="border rounded-[24px] p-2 bg-gray-50">
                     <img src="{{ $permohonan->{'ttd_' . $key} }}" alt="TTD {{ $label }}" class="max-h-24 mx-auto">
                 </div>
-                <div class="flex gap-2 mt-2">
+                <div class="flex flex-col gap-2 mt-2">
                     <a href="{{ $permohonan->{'ttd_' . $key} }}" download="ttd_{{ $key }}_{{ $permohonan->id }}.png" 
-                       class="text-xs text-pln-primary border border-pln-primary px-3 py-1 rounded-full">
+                       class="text-[10px] text-center text-pln-primary border border-pln-primary px-2 py-1.5 rounded-full whitespace-nowrap">
                         📥 Download PNG
                     </a>
                     <button onclick="downloadTransparentSignature('{{ $permohonan->{'ttd_' . $key} }}', 'ttd_{{ $key }}_{{ $permohonan->id }}')" 
-                            class="text-xs text-green-600 border border-green-600 px-3 py-1 rounded-full">
-                        📥 Download (Transparan)
+                            class="text-[10px] text-center text-green-600 border border-green-600 px-2 py-1.5 rounded-full whitespace-nowrap">
+                        📥 Transparan
                     </button>
                 </div>
                 @else

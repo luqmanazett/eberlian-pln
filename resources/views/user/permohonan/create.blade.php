@@ -2,7 +2,7 @@
 
 @section('title', 'Form Permohonan - SIPEL PLN')
 @section('header-title', 'Permohonan')
-<div class="max-w-lg mx-auto pb-20">
+<div class="max-w-lg mx-auto ">
     
     {{-- Header --}}
     <div class="mb-6">

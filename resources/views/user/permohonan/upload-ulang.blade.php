@@ -4,7 +4,7 @@
 @section('header-title', 'Upload Ulang')
 
 @section('content')
-<div class="space-y-4 pb-20">
+<div class="space-y-4 ">
     
     <div class="flex items-center gap-3 mb-2">
         <a href="{{ route('user.permohonan.show', $permohonan->id) }}" class="text-gray-600">

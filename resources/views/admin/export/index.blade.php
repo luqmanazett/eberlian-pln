@@ -4,7 +4,7 @@
 @section('header-title', 'Eksport Data')
 
 @section('content')
-<div class="space-y-4 pb-20">
+<div class="space-y-4 ">
     
     {{-- Header --}}
     <div class="flex items-center gap-3 mb-2">

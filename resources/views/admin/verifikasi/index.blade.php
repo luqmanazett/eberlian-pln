@@ -4,7 +4,7 @@
 @section('header-title', 'Permohonan')
 
 @section('content')
-<div class="space-y-4 pb-20" style="max-width: 360px; margin: 0 auto;">
+<div class="space-y-4 " style="max-width: 360px; margin: 0 auto;">
     
    {{-- Search Bar + Tombol Search --}}
 <form method="GET" action="{{ route('admin.verifikasi.index') }}" class="flex flex-col gap-2">
@@ -147,4 +147,4 @@
     
 </div>
 @endsection
-
+

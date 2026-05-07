@@ -376,13 +376,24 @@
         <header class="app-header">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
-                    {{-- Logo PLN --}}
-                    @if(file_exists(public_path('images/pln-logo.png')))
-                    <img src="{{ asset('images/pln-logo.png') }}" alt="PLN" style="height: 32px; width: auto;">
+                    @hasSection('back-url')
+                        <a href="@yield('back-url')" class="text-white hover:bg-white/20 p-1.5 rounded-lg transition mr-1">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                        </a>
                     @else
-                    <span style="background: white; color: var(--pln-primary); font-weight: bold; padding: 4px 8px; border-radius: 6px; font-size: 14px;">PLN</span>
+                        {{-- Logo PLN --}}
+                        @if(file_exists(public_path('images/pln-logo.png')))
+                        <img src="{{ asset('images/pln-logo.png') }}" alt="PLN" style="height: 32px; width: auto;">
+                        @else
+                        <span style="background: white; color: var(--pln-primary); font-weight: bold; padding: 4px 8px; border-radius: 6px; font-size: 14px;">PLN</span>
+                        @endif
                     @endif
-                    <h1>@yield('header-title', 'SIPEL PLN')</h1>
+                    <div>
+                        <h1 style="line-height: 1.2;">@yield('header-title', 'SIPEL PLN')</h1>
+                        @hasSection('header-subtitle')
+                        <p style="font-size: 11px; color: rgba(255,255,255,0.8); line-height: 1.2; font-weight: 400;">@yield('header-subtitle')</p>
+                        @endif
+                    </div>
                 </div>
                 
                @auth
@@ -435,8 +446,8 @@
             @endphp
             
             @if(!$hideCopyright)
-            <div style="text-align: center; padding: 8px 0; margin-top: 5px; margin-bottom: 70px;">
-                <p style="font-size: 11px; color: #9CA3AF; margin: 0;">© 2026 Luqmanazet. All rights reserved.</p>
+            <div style="text-align: center; padding: 8px 0; margin-top: 5px; margin-bottom: 16px;">
+                <p style="font-size: 11px; color: #9CA3AF; margin: 0;">© {{ date('Y') }} Luqmanazet. All rights reserved.</p>
             </div>
             @endif
         </div>
@@ -479,7 +490,7 @@
                 </span>
             </a>
             
-            <a href="{{ route('profile.edit') }}" class="nav-item {{ request()->routeIs('profile.*') ? 'active' : '' }}">
+            <a href="{{ route('profile.index') }}" class="nav-item {{ request()->routeIs('profile.*') ? 'active' : '' }}">
                 <span style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
                     @if(file_exists(public_path('images/bottom-nav/akun.png')))
                     <img src="{{ asset('images/bottom-nav/akun.png') }}" alt="Akun" style="width: 20px; height: 20px; object-fit: contain;">
@@ -538,7 +549,7 @@
 @endif
     
     {{-- Profil --}}
-    <a href="{{ route('profile.edit') }}" class="nav-item {{ request()->routeIs('profile.*') ? 'active' : '' }}">
+    <a href="{{ route('profile.index') }}" class="nav-item {{ request()->routeIs('profile.*') ? 'active' : '' }}">
         <span style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
             @if(file_exists(public_path('images/bottom-nav/admin/profil.png')))
             <img src="{{ asset('images/bottom-nav/admin/profil.png') }}" alt="Profil" style="width: 20px; height: 20px; object-fit: contain;">

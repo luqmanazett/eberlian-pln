@@ -4,7 +4,7 @@
 @section('header-title', 'Notifikasi')
 
 @section('content')
-<div class="space-y-4 pb-20">
+<div class="space-y-4 ">
     
     {{-- Header dengan Tombol Tandai Semua Dibaca --}}
     <div class="flex items-center justify-between">
