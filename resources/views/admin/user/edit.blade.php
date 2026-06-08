@@ -1,6 +1,6 @@
 @extends('components.pln-layout')
 
-@section('title', 'Edit User - SIPEL PLN')
+@section('title', 'Edit User - E-Berlian')
 @section('header-title', 'Edit User')
 
 @section('content')

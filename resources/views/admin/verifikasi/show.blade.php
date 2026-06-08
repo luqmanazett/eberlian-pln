@@ -1,6 +1,6 @@
 @extends('components.pln-layout')
 
-@section('title', 'Detail Permohonan - SIPEL PLN')
+@section('title', 'Detail Permohonan - E-Berlian')
 @section('header-title', 'Detail Permohonan')
 
 @section('content')
@@ -50,6 +50,8 @@
                     <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700">⏳ Menunggu Verifikasi</span>
                     @elseif($permohonan->status == 'approved')
                     <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">✅ Disetujui</span>
+                    @elseif($permohonan->status == 'cancelled')
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-700">🚫 Dibatalkan</span>
                     @else
                     <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">❌ Ditolak</span>
                     @endif
@@ -136,10 +138,10 @@
         </div>
         
         {{-- Header Label --}}
-        <div class="flex items-center justify-end mb-2 px-1">
+        <div class="flex items-center justify-end mb-2 pr-[14px]">
             <div class="flex items-center gap-6">
-                <span class="text-xs text-gray-400 font-medium w-9 text-center">Lihat</span>
-                <span class="text-xs text-gray-400 font-medium w-4 text-center">Tolak</span>
+                <span class="text-[10px] text-gray-400 font-medium w-9 text-center tracking-wide">Lihat</span>
+                <span class="text-[10px] text-gray-400 font-medium w-4 text-center tracking-wide overflow-visible">Tolak</span>
             </div>
         </div>
         
@@ -164,18 +166,18 @@
                     @if($permohonan->ba_lahan_type == 'upload' && $permohonan->dokumen_ba_lahan)
                         @php $filePath = storage_path('app/public/' . $permohonan->dokumen_ba_lahan); $exists = file_exists($filePath); @endphp
                         @if($exists)
-                        <a href="{{ asset('storage/' . $permohonan->dokumen_ba_lahan) }}" target="_blank" 
+                        <button type="button" onclick="openLightbox('{{ asset('storage/' . $permohonan->dokumen_ba_lahan) }}')" 
                            class="w-9 h-9 flex items-center justify-center rounded-full bg-white border border-gray-200 hover:bg-pln-primary hover:text-white hover:border-pln-primary transition group" title="Lihat Dokumen">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                        </a>
+                        </button>
                         @else
                         <span class="text-xs text-yellow-600 bg-yellow-50 px-2 py-1 rounded-full">⚠️ File tidak ditemukan</span>
                         @endif
                     @elseif($permohonan->ba_lahan_type == 'form' && $permohonan->ba_lahan_data)
-                        <a href="{{ route('admin.export.permohonan.ba-lahan', $permohonan->id) }}" target="_blank"
+                        <button type="button" onclick="openLightbox('{{ route('admin.export.permohonan.ba-lahan', $permohonan->id) }}')"
                                 class="w-9 h-9 flex items-center justify-center rounded-full bg-white border border-gray-200 hover:bg-pln-primary hover:text-white hover:border-pln-primary transition group" title="Lihat Dokumen Resmi">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                        </a>
+                        </button>
                     @else
                         <span class="text-xs text-gray-400">-</span>
                     @endif
@@ -230,18 +232,18 @@
                     @if($permohonan->ba_lingkungan_type == 'upload' && $permohonan->dokumen_ba_lingkungan)
                         @php $filePath = storage_path('app/public/' . $permohonan->dokumen_ba_lingkungan); $exists = file_exists($filePath); @endphp
                         @if($exists)
-                        <a href="{{ asset('storage/' . $permohonan->dokumen_ba_lingkungan) }}" target="_blank" 
+                        <button type="button" onclick="openLightbox('{{ asset('storage/' . $permohonan->dokumen_ba_lingkungan) }}')" 
                            class="w-9 h-9 flex items-center justify-center rounded-full bg-white border border-gray-200 hover:bg-pln-primary hover:text-white hover:border-pln-primary transition group" title="Lihat Dokumen">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                        </a>
+                        </button>
                         @else
                         <span class="text-xs text-yellow-600 bg-yellow-50 px-2 py-1 rounded-full">⚠️ File tidak ditemukan</span>
                         @endif
                     @elseif($permohonan->ba_lingkungan_type == 'form' && $permohonan->ba_lingkungan_data)
-                        <a href="{{ route('admin.export.permohonan.ba-lingkungan', $permohonan->id) }}" target="_blank"
+                        <button type="button" onclick="openLightbox('{{ route('admin.export.permohonan.ba-lingkungan', $permohonan->id) }}')"
                                 class="w-9 h-9 flex items-center justify-center rounded-full bg-white border border-gray-200 hover:bg-pln-primary hover:text-white hover:border-pln-primary transition group" title="Lihat Dokumen Resmi">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                        </a>
+                        </button>
                     @else
                         <span class="text-xs text-gray-400">-</span>
                     @endif
@@ -262,6 +264,7 @@
                     <div><span class="text-xs text-gray-400">Pihak Kesatu</span><p class="font-medium text-gray-800 text-sm">{{ $data['nama_pihak_kesatu'] ?? '-' }}</p></div>
                     <div><span class="text-xs text-gray-400">Jabatan Pihak Kesatu</span><p class="font-medium text-gray-800 text-sm">{{ $data['jabatan_pihak_kesatu'] ?? '-' }}</p></div>
                     <div><span class="text-xs text-gray-400">Pihak Kedua (PLN)</span><p class="font-medium text-gray-800 text-sm">{{ $data['nama_pihak_kedua'] ?? '-' }}</p></div>
+                    <div><span class="text-xs text-gray-400">Jenis Gardu</span><p class="font-medium text-gray-800 text-sm capitalize">{{ $data['jenis_gardu'] ?? '-' }}</p></div>
                     <div><span class="text-xs text-gray-400">Luas Tanah</span><p class="font-medium text-gray-800 text-sm">{{ $data['luas_tanah'] ?? '-' }}</p></div>
                     <div><span class="text-xs text-gray-400">Lokasi</span><p class="font-medium text-gray-800 text-sm">{{ $data['lokasi'] ?? '-' }}</p></div>
                     <div><span class="text-xs text-gray-400">Nomor Sertifikat</span><p class="font-medium text-gray-800 text-sm">{{ $data['nomor_sertifikat'] ?? '-' }}</p></div>
@@ -285,10 +288,10 @@
                     @if($permohonan->dokumen_return_agrimen)
                         @php $filePath = storage_path('app/public/' . $permohonan->dokumen_return_agrimen); $exists = file_exists($filePath); @endphp
                         @if($exists)
-                        <a href="{{ asset('storage/' . $permohonan->dokumen_return_agrimen) }}" target="_blank" 
+                        <button type="button" onclick="openLightbox('{{ asset('storage/' . $permohonan->dokumen_return_agrimen) }}')" 
                            class="w-9 h-9 flex items-center justify-center rounded-full bg-white border border-gray-200 hover:bg-pln-primary hover:text-white hover:border-pln-primary transition group" title="Lihat Dokumen">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                        </a>
+                        </button>
                         @else
                         <span class="text-xs text-yellow-600 bg-yellow-50 px-2 py-1 rounded-full">⚠️ File tidak ditemukan</span>
                         @endif
@@ -316,10 +319,10 @@
                     @if($permohonan->dokumen_imb)
                         @php $filePath = storage_path('app/public/' . $permohonan->dokumen_imb); $exists = file_exists($filePath); @endphp
                         @if($exists)
-                        <a href="{{ asset('storage/' . $permohonan->dokumen_imb) }}" target="_blank" 
+                        <button type="button" onclick="openLightbox('{{ asset('storage/' . $permohonan->dokumen_imb) }}')" 
                            class="w-9 h-9 flex items-center justify-center rounded-full bg-white border border-gray-200 hover:bg-pln-primary hover:text-white hover:border-pln-primary transition group" title="Lihat Dokumen">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                        </a>
+                        </button>
                         @else
                         <span class="text-xs text-yellow-600 bg-yellow-50 px-2 py-1 rounded-full">⚠️ File tidak ditemukan</span>
                         @endif
@@ -347,10 +350,10 @@
                     @if($permohonan->dokumen_sertifikat_lahan)
                         @php $filePath = storage_path('app/public/' . $permohonan->dokumen_sertifikat_lahan); $exists = file_exists($filePath); @endphp
                         @if($exists)
-                        <a href="{{ asset('storage/' . $permohonan->dokumen_sertifikat_lahan) }}" target="_blank" 
+                        <button type="button" onclick="openLightbox('{{ asset('storage/' . $permohonan->dokumen_sertifikat_lahan) }}')" 
                            class="w-9 h-9 flex items-center justify-center rounded-full bg-white border border-gray-200 hover:bg-pln-primary hover:text-white hover:border-pln-primary transition group" title="Lihat Dokumen">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                        </a>
+                        </button>
                         @else
                         <span class="text-xs text-yellow-600 bg-yellow-50 px-2 py-1 rounded-full">⚠️ File tidak ditemukan</span>
                         @endif
@@ -417,14 +420,31 @@
     
     {{-- Tombol Aksi (hanya jika pending) --}}
     @if($permohonan->status == 'pending')
-    <div class="flex gap-3">
-        <button onclick="openApproveModal()" class="btn btn-success flex-1 rounded-full">
-            Setujui
-        </button>
-        <button onclick="openRejectModal()" class="btn flex-1 rounded-full" style="background: #FEE2E2; color: #991B1B;">
-            Tolak
-        </button>
-    </div>
+        @if(isset($isLockedByOther) && $isLockedByOther)
+        <div class="bg-orange-50 border border-orange-200 rounded-2xl p-4 flex items-start gap-3">
+            <span class="text-xl">⚠️</span>
+            <div class="flex-1">
+                <h4 class="font-semibold text-orange-800">Sedang Direview</h4>
+                <p class="text-sm text-orange-700 mt-1 mb-3">Permohonan ini sedang ditinjau oleh Admin lain. Untuk menghindari tumpang tindih (kerja ganda), tombol Setujui/Tolak dinonaktifkan sementara.</p>
+                
+                <form action="{{ route('admin.verifikasi.force-unlock', $permohonan->id) }}" method="POST">
+                    @csrf
+                    <button type="submit" class="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white text-xs font-semibold rounded-lg shadow-sm transition-colors">
+                        Ambil Alih Permohonan
+                    </button>
+                </form>
+            </div>
+        </div>
+        @else
+        <div class="flex gap-3">
+            <button onclick="openApproveModal()" class="btn btn-success flex-1 rounded-full">
+                Setujui
+            </button>
+            <button onclick="openRejectModal()" class="btn flex-1 rounded-full" style="background: #FEE2E2; color: #991B1B;">
+                Tolak
+            </button>
+        </div>
+        @endif
     @endif
     
 </div>
@@ -466,9 +486,17 @@
         <form action="{{ route('admin.verifikasi.reject', $permohonan->id) }}" method="POST">
             @csrf
             
+            {{-- Alasan Penolakan Global (Wajib) --}}
+            <div class="px-6 py-4 border-b border-gray-100">
+                <label class="block text-sm font-medium text-gray-800 mb-2">Alasan Umum Penolakan <span class="text-red-500">*</span></label>
+                <textarea name="catatan_reject_global" rows="3" required
+                          class="w-full border border-gray-200 rounded-[24px] p-4 text-sm resize-none focus:border-red-400 focus:ring-1 focus:ring-red-400" 
+                          placeholder="Contoh: Dokumen tidak lengkap, Foto buram, dll..."></textarea>
+            </div>
+            
             {{-- List Dokumen --}}
             <div class="px-6 py-4 space-y-4">
-                
+                <p class="text-sm font-medium text-gray-800 mb-2">Detail Dokumen yang Ditolak (Opsional)</p>
                 @foreach([
                     'ba_lahan' => ['BA Lingkungan (Penilaian Dampak)', false],
                     'ba_lingkungan' => ['BA Lahan (Serah Terima Gardu)', false],
@@ -549,6 +577,7 @@
     document.addEventListener('click', function(e) {
         if (e.target.id === 'approveModal') closeApproveModal();
         if (e.target.id === 'rejectModal') closeRejectModal();
+        if (e.target.id === 'lightboxModal') closeLightbox();
     });
     
     // Toggle alasan textarea + counter
@@ -574,6 +603,19 @@
             counter.textContent = textarea.value.length;
         }
     }
+    
+    // Auto unlock when leaving page
+    @if($permohonan->status == 'pending' && (!isset($isLockedByOther) || !$isLockedByOther) && $permohonan->locked_by == Auth::id())
+    window.addEventListener('beforeunload', function (e) {
+        // We use navigator.sendBeacon to send a fast async request when the page unloads
+        const url = "{{ route('admin.verifikasi.unlock', $permohonan->id) }}";
+        const formData = new FormData();
+        formData.append('_token', '{{ csrf_token() }}');
+        
+        // sendBeacon doesn't wait for response, perfectly suited for page unload
+        navigator.sendBeacon(url, formData);
+    });
+    @endif
     
     function toggleBaLahan() {
         var el = document.getElementById('baLahanDetail');
@@ -608,6 +650,74 @@
         };
         img.src = dataUrl;
     }
+    
+    // LIGHTBOX LOGIC
+    function openLightbox(url) {
+        // Cek apakah ini PDF atau file hasil export PDF
+        const isPdf = url.toLowerCase().includes('.pdf') || 
+                      url.toLowerCase().includes('export-pdf') || 
+                      url.toLowerCase().includes('ba-lahan') || 
+                      url.toLowerCase().includes('ba-lingkungan');
+                      
+        if (isPdf) {
+            // Browser HP (Safari/Chrome) tidak bisa render PDF di dalam iframe.
+            // Jadi untuk PDF, kita langsung buka di tab baru seperti biasa.
+            window.open(url, '_blank');
+            return;
+        }
+
+        const modal = document.getElementById('lightboxModal');
+        const img = document.getElementById('lightboxImage');
+        const loader = document.getElementById('lightboxLoader');
+        const downloadBtn = document.getElementById('lightboxDownloadBtn');
+        
+        modal.style.display = 'flex';
+        
+        img.style.display = 'none';
+        loader.style.display = 'flex';
+        
+        downloadBtn.href = url;
+        
+        img.src = url;
+        img.onload = () => {
+            loader.style.display = 'none';
+            img.style.display = 'block';
+        };
+        img.onerror = () => {
+            loader.style.display = 'none';
+            img.style.display = 'block';
+        };
+    }
+
+    function closeLightbox() {
+        const modal = document.getElementById('lightboxModal');
+        modal.style.display = 'none';
+        document.getElementById('lightboxImage').src = '';
+    }
 </script>
+
+{{-- LIGHTBOX MODAL --}}
+<div id="lightboxModal" class="hidden" style="position: fixed; inset: 0; background-color: rgba(0,0,0,0.9); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 1rem;">
+    {{-- Tombol Tutup & Download --}}
+    <div style="position: absolute; top: 1rem; right: 1rem; display: flex; gap: 0.75rem; z-index: 10000;">
+        <a id="lightboxDownloadBtn" href="#" target="_blank" download style="width: 2.5rem; height: 2.5rem; background-color: rgba(255,255,255,0.2); border-radius: 9999px; display: flex; align-items: center; justify-content: center; color: white; text-decoration: none;" title="Download File">
+            <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+        </a>
+        <button onclick="closeLightbox()" style="width: 2.5rem; height: 2.5rem; background-color: #EF4444; border: none; border-radius: 9999px; display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" title="Tutup Preview">
+            <svg style="width: 1.5rem; height: 1.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+    </div>
+    
+    <div style="width: 100%; max-width: 64rem; height: 100%; max-height: 85vh; display: flex; align-items: center; justify-content: center; position: relative; margin-top: 2rem;">
+        {{-- Loader --}}
+        <div id="lightboxLoader" style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: white;">
+            <svg style="animation: spin 1s linear infinite; height: 2.5rem; width: 2.5rem; color: white;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle style="opacity: 0.25;" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path style="opacity: 0.75;" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            <style>@keyframes spin { 100% { transform: rotate(360deg); } }</style>
+        </div>
+        
+        {{-- Image Content --}}
+        <img id="lightboxImage" src="" style="max-width: 100%; max-height: 100%; object-fit: contain; display: none; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); border-radius: 0.5rem; border: 1px solid rgba(255,255,255,0.1);" alt="Preview Dokumen">
+    </div>
+</div>
 
 @endsection

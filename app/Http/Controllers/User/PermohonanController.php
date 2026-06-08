@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Permohonan;
 use App\Models\ActivityLog;
 use App\Models\RiwayatPerbaikan;
+use App\Models\Notifikasi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -43,8 +44,19 @@ class PermohonanController extends Controller
         $query->where('status', $request->status);
     }
     
-    // 👇 URUTAN BERDASARKAN WAKTU TERBARU (updated_at)
-    $permohonans = $query->orderBy('updated_at', 'desc')->paginate(10);
+    // Search berdasarkan ID Register atau Nama Pelanggan
+    if ($request->has('search') && $request->search != '') {
+        $search = $request->search;
+        $query->where(function($q) use ($search) {
+            $q->where('id_register', 'like', "%{$search}%")
+              ->orWhere('nama_pelanggan', 'like', "%{$search}%")
+              ->orWhere('id', 'like', "%{$search}%");
+        });
+    }
+    
+    // 👇 URUTAN BERDASARKAN WAKTU TERBARU (created_at)
+    // Gunakan appends request agar parameter query tidak hilang saat pindah halaman
+    $permohonans = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
     
     return view('user.permohonan.history', compact('permohonans'));
 }
@@ -55,7 +67,38 @@ class PermohonanController extends Controller
             ->with(['detailPenolakan'])
             ->findOrFail($id);
             
+        // Tandai notifikasi terkait sebagai sudah dibaca
+        Notifikasi::where('user_id', Auth::id())
+            ->where('permohonan_id', $id)
+            ->where('sudah_dibaca', false)
+            ->update(['sudah_dibaca' => true]);
+            
         return view('user.permohonan.show', compact('permohonan'));
+    }
+    
+    public function cancel($id)
+    {
+        $permohonan = Permohonan::where('user_id', Auth::id())->findOrFail($id);
+        
+        if ($permohonan->status !== 'pending') {
+            return redirect()->back()->with('error', 'Hanya permohonan dengan status Menunggu Verifikasi yang dapat dibatalkan.');
+        }
+        
+        $permohonan->update([
+            'status' => 'cancelled',
+            'catatan_reject_global' => 'Dibatalkan oleh Pelanggan',
+        ]);
+        
+        ActivityLog::create([
+            'user_id' => Auth::id(),
+            'role' => 'user',
+            'action' => 'cancel_permohonan',
+            'description' => "User membatalkan permohonan #{$permohonan->id}",
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->userAgent(),
+        ]);
+        
+        return redirect()->route('user.permohonan.history')->with('success', 'Permohonan berhasil dibatalkan.');
     }
     
    public function uploadUlang($id)

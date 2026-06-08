@@ -1,7 +1,7 @@
 <div>
     {{-- Header dengan Back Button --}}
     <div class="flex items-center gap-3 mb-2">
-        <a href="{{ route('user.dashboard') }}" class="text-gray-600">
+        <a href="{{ route('user.permohonan.create') }}" class="text-gray-600">
             <span class="text-2xl">←</span>
         </a>
         <h2 class="text-xl font-bold text-gray-800">Form Permohonan</h2>
@@ -48,8 +48,8 @@
                 <label class="block font-medium mb-2">IDPEL <span class="text-red-500">*</span></label>
                 <input type="text" wire:model="idpel" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pln-primary focus:ring-1 focus:ring-pln-primary" placeholder="Masukkan IDPEL">
             @else
-                <label class="block font-medium mb-2">IDPEL <span class="text-gray-400 text-xs font-normal">(Opsional)</span></label>
-                <input type="text" wire:model="idpel" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pln-primary focus:ring-1 focus:ring-pln-primary" placeholder="Masukkan IDPEL (opsional)">
+                <label class="block font-medium mb-2">IDPEL <span class="text-red-500">*</span></label>
+                <input type="text" wire:model="idpel" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-pln-primary focus:ring-1 focus:ring-pln-primary" placeholder="Masukkan IDPEL">
             @endif
             @error('idpel') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
         </div>
@@ -118,10 +118,10 @@
             
             {{-- Pilih Opsi --}}
            <div class="mb-4">
-    <label class="block text-xs font-medium mb-1">Pilih Metode</label>
-    <select wire:model.live="ba_lahan_option" class="input-field text-sm">
-        <option value="upload">📤 Upload File (TTD Manual)</option>
-        <option value="form">📝 Isi Form (TTD Elektronik)</option>
+    <label class="block text-xs font-medium mb-1">Pilih Metode <span class="text-red-500">*</span></label>
+    <select wire:model.live="ba_lahan_option" class="input-field text-sm truncate">
+        <option value="upload">📤 Upload Dokumen</option>
+        <option value="form">📝 Isi Form Online</option>
     </select>
 </div>
             
@@ -139,39 +139,47 @@
             @if($ba_lahan_option == 'form')
             <div class="space-y-3 border rounded-lg p-4 bg-gray-50">
                 <div>
-                    <label class="text-xs font-medium">Unit PLN</label>
+                    <label class="text-xs font-medium">Unit PLN <span class="text-red-500">*</span></label>
                     <input type="text" wire:model="ba_lahan_form.unit_pln" class="input-field text-sm" placeholder="Contoh: ULP Jakarta Selatan">
+                    @error('ba_lahan_form.unit_pln') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="text-xs font-medium">Nama Pekerjaan</label>
+                    <label class="text-xs font-medium">Nama Pekerjaan <span class="text-red-500">*</span></label>
                     <input type="text" wire:model="ba_lahan_form.nama_pekerjaan" class="input-field text-sm" placeholder="Nama pekerjaan">
+                    @error('ba_lahan_form.nama_pekerjaan') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="text-xs font-medium">Desa/Kelurahan</label>
+                    <label class="text-xs font-medium">Desa/Kelurahan <span class="text-red-500">*</span></label>
                     <input type="text" wire:model="ba_lahan_form.desa_kelurahan" class="input-field text-sm">
+                    @error('ba_lahan_form.desa_kelurahan') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="text-xs font-medium">Kecamatan</label>
+                    <label class="text-xs font-medium">Kecamatan <span class="text-red-500">*</span></label>
                     <input type="text" wire:model="ba_lahan_form.kecamatan" class="input-field text-sm">
+                    @error('ba_lahan_form.kecamatan') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="text-xs font-medium">Kabupaten/Kota</label>
+                    <label class="text-xs font-medium">Kabupaten/Kota <span class="text-red-500">*</span></label>
                     <input type="text" wire:model="ba_lahan_form.kabupaten_kota" class="input-field text-sm">
+                    @error('ba_lahan_form.kabupaten_kota') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="text-xs font-medium">Nama Pemilik Lahan</label>
+                    <label class="text-xs font-medium">Nama Pemilik Lahan <span class="text-red-500">*</span></label>
                     <input type="text" wire:model="ba_lahan_form.nama_pemilik" class="input-field text-sm">
+                    @error('ba_lahan_form.nama_pemilik') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="text-xs font-medium">No Telepon Pemilik</label>
+                    <label class="text-xs font-medium">No Telepon Pemilik <span class="text-red-500">*</span></label>
                     <input type="tel" wire:model="ba_lahan_form.no_telepon_pemilik" class="input-field text-sm">
+                    @error('ba_lahan_form.no_telepon_pemilik') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="text-xs font-medium">Alamat Pemilik</label>
+                    <label class="text-xs font-medium">Alamat Pemilik <span class="text-red-500">*</span></label>
                     <textarea wire:model="ba_lahan_form.alamat_pemilik" rows="2" class="input-field text-sm"></textarea>
+                    @error('ba_lahan_form.alamat_pemilik') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="text-xs font-medium">Status</label>
+                    <label class="text-xs font-medium">Status <span class="text-red-500">*</span></label>
                     <select wire:model="ba_lahan_form.status_pemilik" class="input-field text-sm">
                         <option value="">Pilih</option>
                         <option value="pemilik_lahan">Pemilik Lahan</option>
@@ -179,6 +187,7 @@
                         <option value="perwakilan">Perwakilan Pemilik Lahan</option>
                         <option value="pemerintah_desa">Pemerintah Desa/Kelurahan</option>
                     </select>
+                    @error('ba_lahan_form.status_pemilik') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 
                 {{-- Pernyataan --}}
@@ -214,10 +223,10 @@
             
             {{-- Pilih Opsi --}}
          <div class="mb-4">
-    <label class="block text-xs font-medium mb-1">Pilih Metode</label>
-    <select wire:model.live="ba_lingkungan_option" class="input-field text-sm">
-        <option value="upload">📤 Upload File (TTD Manual)</option>
-        <option value="form">📝 Isi Form (TTD Elektronik)</option>
+    <label class="block text-xs font-medium mb-1">Pilih Metode <span class="text-red-500">*</span></label>
+    <select wire:model.live="ba_lingkungan_option" class="input-field text-sm truncate">
+        <option value="upload">📤 Upload Dokumen</option>
+        <option value="form">📝 Isi Form Online</option>
     </select>
 </div>
             
@@ -235,52 +244,110 @@
             @if($ba_lingkungan_option == 'form')
             <div class="space-y-3 border rounded-lg p-4 bg-gray-50">
                 <div>
-                    <label class="text-xs font-medium">Nomor BA</label>
+                    <label class="text-xs font-medium">Nomor BA <span class="text-red-500">*</span></label>
                     <input type="text" wire:model="ba_lingkungan_form.nomor_ba" class="input-field text-sm" placeholder="Contoh: 001/BA/2024">
+                    @error('ba_lingkungan_form.nomor_ba') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="text-xs font-medium">Nama Pihak Kesatu (Pemilik Lahan)</label>
+                    <label class="text-xs font-medium">Nama Pihak Kesatu (Pemilik Lahan) <span class="text-red-500">*</span></label>
                     <input type="text" wire:model="ba_lingkungan_form.nama_pihak_kesatu" class="input-field text-sm">
+                    @error('ba_lingkungan_form.nama_pihak_kesatu') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="text-xs font-medium">Jabatan Pihak Kesatu</label>
+                    <label class="text-xs font-medium">Jabatan Pihak Kesatu <span class="text-red-500">*</span></label>
                     <input type="text" wire:model="ba_lingkungan_form.jabatan_pihak_kesatu" class="input-field text-sm" placeholder="Contoh: Direktur">
+                    @error('ba_lingkungan_form.jabatan_pihak_kesatu') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="text-xs font-medium">Nama Pihak Kedua (PLN)</label>
+                    <label class="text-xs font-medium">Nama Pihak Kedua (PLN) <span class="text-red-500">*</span></label>
                     <input type="text" wire:model="ba_lingkungan_form.nama_pihak_kedua" class="input-field text-sm">
+                    @error('ba_lingkungan_form.nama_pihak_kedua') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                </div>
+                <div x-data="{ 
+                    jenis: @entangle('jenis_gardu'), 
+                    luas: @entangle('luas_tanah_gardu') 
+                }">
+                    <div class="mb-4">
+                        <label class="text-xs font-medium">Jenis Gardu <span class="text-red-500">*</span></label>
+                        <select x-model="jenis" 
+                                x-on:change="
+                                    if (jenis === 'tembok_7r2') {
+                                        luas = '5 x 5 m';
+                                    } else if (jenis === 'tembok_st17') {
+                                        luas = '5 x 7 m';
+                                    } else if (jenis === 'tembok_st16') {
+                                        luas = '5 x 9 m';
+                                    } else if (jenis === 'garpor') {
+                                        luas = '2 x 5 m';
+                                    } else if (jenis === 'portal') {
+                                        luas = '2 x 2 m';
+                                    } else if (jenis === 'cantol') {
+                                        luas = '2 x 1 m';
+                                    } else {
+                                        luas = '';
+                                    }
+                                " 
+                                class="input-field text-sm">
+                            <option value="">Pilih Jenis Gardu</option>
+                            <option value="tembok_7r2">Gardu Tembok 7R2</option>
+                            <option value="tembok_st17">Gardu Tembok ST-17</option>
+                            <option value="tembok_st16">Gardu Tembok ST-16</option>
+                            <option value="garpor">Gardu Garpor / GP6</option>
+                            <option value="portal">Gardu Portal</option>
+                            <option value="cantol">Gardu Cantol</option>
+                            <option value="custom">Gardu Custom</option>
+                        </select>
+                        @error('ba_lingkungan_form.jenis_gardu') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                    </div>
+                    <div>
+                        <label class="text-xs font-medium">Luas Tanah <span class="text-red-500">*</span></label>
+                        <input type="text" x-model="luas" :readonly="jenis !== '' && jenis !== 'custom'" :class="(jenis !== '' && jenis !== 'custom') ? 'bg-gray-100 cursor-not-allowed' : ''" class="input-field text-sm" placeholder="Contoh: 5 x 9 m">
+                        @error('ba_lingkungan_form.luas_tanah') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                    </div>
                 </div>
                 <div>
-                    <label class="text-xs font-medium">Luas Tanah</label>
-                    <input type="text" wire:model="ba_lingkungan_form.luas_tanah" class="input-field text-sm" placeholder="Contoh: 5 x 9 m">
-                </div>
-                <div>
-                    <label class="text-xs font-medium">Lokasi</label>
+                    <label class="text-xs font-medium">Lokasi <span class="text-red-500">*</span></label>
                     <input type="text" wire:model="ba_lingkungan_form.lokasi" class="input-field text-sm">
+                    @error('ba_lingkungan_form.lokasi') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label class="text-xs font-medium">Nomor Sertifikat (Opsional)</label>
+                    <label class="text-xs font-medium">Nomor Sertifikat <span class="text-red-500">*</span></label>
                     <input type="text" wire:model="ba_lingkungan_form.nomor_sertifikat" class="input-field text-sm">
+                    @error('ba_lingkungan_form.nomor_sertifikat') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 
                 {{-- Batas-batas --}}
                 <div class="grid grid-cols-2 gap-2">
                     <div>
-                        <label class="text-xs font-medium">Batas Utara</label>
+                        <label class="text-xs font-medium">Batas Utara <span class="text-red-500">*</span></label>
                         <input type="text" wire:model="ba_lingkungan_form.batas_utara" class="input-field text-sm">
+                        @error('ba_lingkungan_form.batas_utara') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div>
-                        <label class="text-xs font-medium">Batas Timur</label>
+                        <label class="text-xs font-medium">Batas Timur <span class="text-red-500">*</span></label>
                         <input type="text" wire:model="ba_lingkungan_form.batas_timur" class="input-field text-sm">
+                        @error('ba_lingkungan_form.batas_timur') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div>
-                        <label class="text-xs font-medium">Batas Selatan</label>
+                        <label class="text-xs font-medium">Batas Selatan <span class="text-red-500">*</span></label>
                         <input type="text" wire:model="ba_lingkungan_form.batas_selatan" class="input-field text-sm">
+                        @error('ba_lingkungan_form.batas_selatan') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div>
-                        <label class="text-xs font-medium">Batas Barat</label>
+                        <label class="text-xs font-medium">Batas Barat <span class="text-red-500">*</span></label>
                         <input type="text" wire:model="ba_lingkungan_form.batas_barat" class="input-field text-sm">
+                        @error('ba_lingkungan_form.batas_barat') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
+                </div>
+                
+                {{-- Gambar Situasi Lahan --}}
+                <div class="mt-2">
+                    <label class="text-xs font-medium">Gambar Situasi Lahan Gardu (Upload Foto) <span class="text-red-500">*</span></label>
+                    <input type="file" wire:model="gambar_situasi_lahan" class="input-field text-sm" accept="image/*">
+                    @error('gambar_situasi_lahan') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
+                    @if ($gambar_situasi_lahan)
+                        <div class="mt-2 text-xs text-green-600">✓ Gambar terpilih</div>
+                    @endif
                 </div>
                 
                 <div class="text-xs text-gray-500 italic">
@@ -312,6 +379,7 @@
                 </div>
             </div>
             <input type="file" wire:model="dokumen_imb" class="input-field text-sm" accept=".pdf,.jpg,.jpeg,.png">
+            @error('dokumen_imb') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             @if($dokumen_imb)
                 <div class="file-preview">
                     <span class="text-sm text-gray-700">{{ $dokumen_imb->getClientOriginalName() }}</span>
@@ -329,6 +397,7 @@
                 </div>
             </div>
             <input type="file" wire:model="dokumen_sertifikat_lahan" class="input-field text-sm" accept=".pdf,.jpg,.jpeg,.png">
+            @error('dokumen_sertifikat_lahan') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             @if($dokumen_sertifikat_lahan)
                 <div class="file-preview">
                     <span class="text-sm text-gray-700">{{ $dokumen_sertifikat_lahan->getClientOriginalName() }}</span>
@@ -393,13 +462,6 @@
     </button>
     
     @if($needStep3)
-    <div style="background: yellow; padding: 10px; margin: 10px 0;">
-    🔍 DEBUG INFO:<br>
-    currentStep: {{ $currentStep }}<br>
-    needStep3: {{ $needStep3 ? 'TRUE' : 'FALSE' }}<br>
-    ba_lahan_option: {{ $ba_lahan_option }}<br>
-    ba_lingkungan_option: {{ $ba_lingkungan_option }}<br>
-</div>
     <button type="button" wire:click.prevent="nextStep" class="btn btn-primary flex-1">
         Selanjutnya
     </button>
@@ -423,8 +485,7 @@
 @endif
     </div>
     
-    {{-- Spacer --}}
-    <div class="h-20"></div>
+    {{-- Spacer dihapus agar tidak over-scroll --}}
     
     {{-- Script --}}
  <script>
@@ -443,6 +504,23 @@ window.addEventListener('message', function(event) {
             console.error('❌ Input not found:', event.data.inputId);
         }
     }
+});
+
+// Auto-scroll to validation error
+document.addEventListener('livewire:init', () => {
+    Livewire.hook('commit', ({ component, succeed }) => {
+        succeed(() => {
+            setTimeout(() => {
+                // Cari elemen error yang sesungguhnya (bukan tanda bintang/asterisk merah pada label)
+                const errorElements = Array.from(document.querySelectorAll('.text-red-500'));
+                const firstError = errorElements.find(el => el.textContent.trim() !== '*');
+                
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 100);
+        });
+    });
 });
 </script>
 </div>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Login - SIPEL PLN</title>
+    <title>Login - E-Berlian</title>
     
     {{-- Font Inter --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -40,12 +40,17 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 300px;
+            height: 45vh;
+            min-height: 300px;
+            background-color: var(--pln-primary-dark);
             background-image: url('{{ asset("images/login-bg.png") }}');
-            background-size: 120%;
-            background-position: center 30%;
+            background-size: cover;
+            background-position: center bottom;
             background-repeat: no-repeat;
             z-index: 1;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
         
         {{-- Container Utama --}}
@@ -56,52 +61,56 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 16px 16px 20px;
+            justify-content: center;
+            padding: 24px 20px;
         }
         
         {{-- Logo & Judul --}}
         .header-section {
             text-align: center;
-            margin-bottom: 16px;
-            margin-top: 20px;
+            margin-bottom: 24px;
             position: relative;
             z-index: 15;
+            width: 100%;
         }
         
         .header-section img {
-            height: 60px;
+            height: 65px;
             width: auto;
             margin-bottom: 12px;
             display: block;
             margin-left: auto;
             margin-right: auto;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
         }
         
         .header-section h1 {
-            font-size: 26px;
+            font-size: 28px;
             font-weight: 700;
             color: white;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
             text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            letter-spacing: -0.5px;
         }
         
         .header-section .tagline {
-            font-size: 13px;
+            font-size: 14px;
             color: rgba(255,255,255,0.95);
-            line-height: 1.4;
+            line-height: 1.5;
             text-shadow: 0 1px 2px rgba(0,0,0,0.2);
         }
         
         {{-- Card Form - PUTIH SOLID --}}
         .login-card {
-            max-width: 420px;
+            max-width: 400px;
             width: 100%;
             background: white;
-            border-radius: 20px;
-            padding: 24px 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            border-radius: 24px;
+            padding: 32px 24px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
             position: relative;
             z-index: 20;
+            margin-bottom: 24px;
         }
         
         .welcome-text {
@@ -159,34 +168,29 @@
         .btn-login {
             width: 100%;
             padding: 14px;
-            background: var(--pln-primary);
+            background: #0F766E; /* Teal gelap agar tidak terlalu cerah */
             border: none;
-            border-radius: 10px;
-            font-size: 15px;
+            border-radius: 12px;
+            font-size: 16px;
             font-weight: 600;
             color: white;
             cursor: pointer;
-            transition: all 0.2s;
-            margin-top: 6px;
+            transition: all 0.2s ease;
+            margin-top: 10px;
+            box-shadow: 0 4px 12px rgba(15, 118, 110, 0.2);
         }
         
         .btn-login:hover {
-            background: var(--pln-primary-dark);
+            background: #115E59;
+            box-shadow: 0 6px 16px rgba(15, 118, 110, 0.3);
+            transform: translateY(-1px);
         }
         
         .btn-login:active {
-            transform: scale(0.98);
+            transform: translateY(1px);
+            box-shadow: 0 2px 8px rgba(15, 118, 110, 0.2);
         }
         
-        .session-info {
-            text-align: center;
-            margin-top: 16px;
-        }
-        
-        .session-info p {
-            font-size: 11px;
-            color: #9CA3AF;
-        }
         
         .error-message {
             background: #FEE2E2;
@@ -261,7 +265,9 @@
         {{-- Register Link --}}
         .register-link {
             text-align: center;
-            margin-top: 16px;
+            margin-bottom: 24px;
+            position: relative;
+            z-index: 20;
         }
         
         .register-link a {
@@ -289,10 +295,10 @@
             </div>
             @endif
             
-            <h1>SIPEL PLN</h1>
+            <h1>E-Berlian</h1>
             <div class="tagline">
-                Sistem Informasi Permohonan<br>
-                Pelanggan PLN
+                Elektronik Berita Acara Lingkungan<br>
+                dan Pertanahan
             </div>
         </div>
         
@@ -348,10 +354,6 @@
                 </button>
             </form>
             
-            {{-- Session Info --}}
-            <div class="session-info">
-                <p>⏱️ Session akan berakhir setelah 10 menit tidak aktif</p>
-            </div>
             
         </div>
         
@@ -362,7 +364,7 @@
         
         {{-- Footer --}}
         <div class="footer">
-            <p>© 2026 Luqmanazet. All rights reserved.</p>
+            <p>Sistem dibangun oleh Luqmanazet - Tim Magang 2026</p>
         </div>
         
     </div>

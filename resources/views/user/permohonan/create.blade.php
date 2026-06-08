@@ -1,6 +1,6 @@
 @extends('components.pln-layout')
 
-@section('title', 'Form Permohonan - SIPEL PLN')
+@section('title', 'Form Permohonan - E-Berlian')
 @section('header-title', 'Permohonan')
 <div class="max-w-lg mx-auto ">
     
@@ -145,8 +145,8 @@
         </div>
         
         {{-- Submit Button --}}
-        <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
-            <div class="max-w-lg mx-auto">
+        <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 z-40">
+            <div class="max-w-7xl mx-auto">
                 <button type="submit" class="w-full bg-pln-blue text-white font-semibold py-3 rounded-lg hover:bg-blue-700 transition">
                     Lanjutkan ke Upload Dokumen
                 </button>

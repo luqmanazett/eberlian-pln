@@ -1,6 +1,6 @@
 @extends('components.pln-layout')
 
-@section('title', 'Notifikasi - SIPEL PLN')
+@section('title', 'Notifikasi - E-Berlian')
 @section('header-title', 'Notifikasi')
 
 @section('content')

@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Detail Permohonan SIPEL PLN</title>
+    <title>Detail Permohonan E-Berlian</title>
     <style>
         body { font-family: sans-serif; font-size: 11px; color: #333; }
         .page-break { page-break-after: always; }
@@ -32,7 +32,7 @@
 <body>
     @if(count($permohonans) == 0)
         <div class="header">
-            <h2>DATA PERMOHONAN SIPEL PLN</h2>
+            <h2>DATA PERMOHONAN E-Berlian</h2>
             <p>Tidak ada data permohonan pada filter ini.</p>
         </div>
     @endif
@@ -41,7 +41,7 @@
         <div class="info-header">Dicetak: {{ now()->format('d/m/Y H:i') }} | Hal. {{ $index + 1 }}/{{ count($permohonans) }}</div>
         
         <div class="header">
-            <h2>DETAIL PERMOHONAN SIPEL PLN</h2>
+            <h2>DETAIL PERMOHONAN E-Berlian</h2>
             <p>ID Register: <strong>{{ $p->id_register ?? ('PMH-' . $p->id) }}</strong> | Tanggal: {{ $p->tanggal_upload ? $p->tanggal_upload->format('d M Y H:i') : '-' }}</p>
         </div>
 

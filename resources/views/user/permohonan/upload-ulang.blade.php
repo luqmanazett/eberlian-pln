@@ -1,6 +1,6 @@
 @extends('components.pln-layout')
 
-@section('title', 'Upload Ulang Dokumen - SIPEL PLN')
+@section('title', 'Upload Ulang Dokumen - E-Berlian')
 @section('header-title', 'Upload Ulang')
 
 @section('content')

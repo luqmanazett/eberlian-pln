@@ -1,6 +1,6 @@
 @extends('components.pln-layout')
 
-@section('title', 'Profil - SIPEL PLN')
+@section('title', 'Profil - E-Berlian')
 @section('header-title', 'Profil')
 
 @section('content')
@@ -130,13 +130,25 @@
         {{-- Profile Floating Card --}}
         <div class="profile-card">
             <div class="avatar-circle">
-                <svg class="w-10 h-10 text-pln-primary" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>
+                @if(Auth::user()->avatar)
+                    <img src="{{ asset('storage/' . Auth::user()->avatar) }}" alt="Profile" class="w-full h-full object-cover">
+                @else
+                    <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=008080&color=fff&size=100" alt="Profile" class="w-full h-full object-cover">
+                @endif
             </div>
             <div class="flex-1 min-w-0">
                 <h2 class="text-lg font-bold text-gray-800 truncate">{{ Auth::user()->name }}</h2>
                 <p class="text-[13px] text-gray-500 truncate">{{ Auth::user()->email }}</p>
                 <span class="inline-block mt-1 px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-[10px] font-bold tracking-wide border border-gray-200">
-                    {{ strtoupper(Auth::user()->role) }}
+                    @if(Auth::user()->role == 'admin')
+                        @if(Auth::user()->admin_level == 1)
+                            ADMIN UTAMA
+                        @else
+                            VERIFIKATOR
+                        @endif
+                    @else
+                        {{ strtoupper(Auth::user()->role) }}
+                    @endif
                 </span>
             </div>
         </div>

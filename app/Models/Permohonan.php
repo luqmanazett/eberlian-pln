@@ -53,6 +53,10 @@ class Permohonan extends Model
         'jumlah_perbaikan',
         'tanggal_upload',
         'tanggal_reject',
+        
+        // Locking
+        'locked_by',
+        'locked_at',
     ];
     
     protected $casts = [
@@ -60,6 +64,7 @@ class Permohonan extends Model
         'rejected_at' => 'datetime',
         'tanggal_upload' => 'datetime',
         'tanggal_reject' => 'datetime',
+        'locked_at' => 'datetime',
         'ba_lahan_data' => 'array',
         'ba_lingkungan_data' => 'array',
     ];
@@ -72,6 +77,11 @@ class Permohonan extends Model
     public function approvedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'approved_by');
+    }
+    
+    public function lockedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'locked_by');
     }
     
     public function detailPenolakan(): HasMany

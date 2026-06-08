@@ -1,6 +1,6 @@
 @extends('components.pln-layout')
 
-@section('title', 'Eksport Data - SIPEL PLN')
+@section('title', 'Eksport Data - E-Berlian')
 @section('header-title', 'Eksport Data')
 
 @section('content')

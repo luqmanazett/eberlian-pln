@@ -1,8 +1,7 @@
 @extends('components.pln-layout')
 
-@section('title', 'Kelola Profil - SIPEL PLN')
+@section('title', 'Kelola Profil - E-Berlian')
 @section('header-title', 'Kelola Profil')
-@section('header-subtitle', 'Kelola informasi akun Anda')
 @section('back-url', route('profile.index'))
 
 @push('styles')
@@ -80,12 +79,15 @@
             {{-- Avatar Section --}}
             <div class="avatar-wrapper mb-8">
                 <div class="avatar-circle">
-                    {{-- Ganti dengan foto profil asli jika ada --}}
-                    <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=008080&color=fff&size=100" alt="Avatar" class="w-full h-full object-cover">
+                    @if(Auth::user()->avatar)
+                        <img id="avatar-preview" src="{{ asset('storage/' . Auth::user()->avatar) }}" alt="Avatar" class="w-full h-full object-cover">
+                    @else
+                        <img id="avatar-preview" src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=008080&color=fff&size=100" alt="Avatar" class="w-full h-full object-cover">
+                    @endif
                 </div>
-                <div class="avatar-camera">
+                <label for="avatar_upload" class="avatar-camera">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                </div>
+                </label>
             </div>
 
             {{-- Informasi Akun Header --}}
@@ -106,9 +108,12 @@
             </div>
             @endif
 
-            <form method="POST" action="{{ route('profile.update') }}" class="space-y-4">
+            <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data" class="space-y-4">
                 @csrf
                 @method('PATCH')
+                
+                <input type="file" name="avatar" id="avatar_upload" class="hidden" accept="image/*" onchange="previewAvatar(event)">
+                @error('avatar')<p class="text-red-500 text-[10px] mb-2 text-center">{{ $message }}</p>@enderror
                 
                 {{-- Nama Lengkap (Read Only) --}}
                 <div>
@@ -186,4 +191,17 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+    function previewAvatar(event) {
+        var reader = new FileReader();
+        reader.onload = function(){
+            var output = document.getElementById('avatar-preview');
+            output.src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+</script>
+@endpush
 @endsection

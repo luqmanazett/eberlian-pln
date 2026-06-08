@@ -1,6 +1,6 @@
 @extends('components.pln-layout')
 
-@section('title', 'Permohonan - SIPEL PLN')
+@section('title', 'Permohonan - E-Berlian')
 @section('header-title', 'Permohonan')
 
 @section('content')
@@ -69,6 +69,12 @@
                   style="{{ request('status') == 'rejected' ? 'background: #46C2B3;' : '' }}">
             Ditolak
         </a>
+        <a href="{{ route('admin.verifikasi.index', array_merge(request()->except('status'), ['status' => 'cancelled'])) }}" 
+           class="flex-shrink-0 px-5 py-2.5 rounded-full text-sm font-medium transition-all
+                  {{ request('status') == 'cancelled' ? 'text-white shadow-md' : 'bg-white border border-gray-200 text-gray-600' }}"
+                  style="{{ request('status') == 'cancelled' ? 'background: #46C2B3;' : '' }}">
+            Dibatalkan
+        </a>
     </div>
     
   {{-- List Permohonan - Desain Code 1 + Ukuran Code 2 --}}
@@ -79,7 +85,7 @@
             
             {{-- Indikator Status Warna di Samping Kiri --}}
             <div class="absolute left-0 top-0 bottom-0 w-1" 
-                 style="background: {{ $item->status == 'pending' ? '#FFD500' : ($item->status == 'approved' ? '#46C2B3' : '#EF4444') }}">
+                 style="background: {{ $item->status == 'pending' ? '#FFD500' : ($item->status == 'approved' ? '#46C2B3' : ($item->status == 'cancelled' ? '#6B7280' : '#EF4444')) }}">
             </div>
 
             <div class="pl-2">
@@ -88,9 +94,15 @@
                     <span class="text-xs font-medium text-gray-500">ID Register: {{ $item->id_register ?? ('PMH-' . $item->id) }}</span>
                     
                     @if($item->status == 'pending')
-                        <span class="px-3 py-1 rounded-full text-xs font-medium" style="background: #FEF3C7; color: #92400E;">Menunggu</span>
+                        @if($item->locked_by && $item->locked_at && $item->locked_at->diffInMinutes(now()) < 3)
+                            <span class="px-3 py-1 rounded-full text-xs font-medium border border-orange-200" style="background: #FFF7ED; color: #C2410C;">👀 Sedang Direview</span>
+                        @else
+                            <span class="px-3 py-1 rounded-full text-xs font-medium" style="background: #FEF3C7; color: #92400E;">Menunggu</span>
+                        @endif
                     @elseif($item->status == 'approved')
                         <span class="px-3 py-1 rounded-full text-xs font-medium" style="background: #D1FAE5; color: #065F46;">Disetujui</span>
+                    @elseif($item->status == 'cancelled')
+                        <span class="px-3 py-1 rounded-full text-xs font-medium" style="background: #F3F4F6; color: #374151;">Dibatalkan</span>
                     @else
                         <span class="px-3 py-1 rounded-full text-xs font-medium" style="background: #FEE2E2; color: #991B1B;">Ditolak</span>
                     @endif

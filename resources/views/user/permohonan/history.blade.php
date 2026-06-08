@@ -1,6 +1,6 @@
 @extends('components.pln-layout')
 
-@section('title', 'Riwayat Permohonan - SIPEL PLN')
+@section('title', 'Riwayat Permohonan - E-Berlian')
 @section('header-title', 'Riwayat')
 
 @section('content')
@@ -14,6 +14,24 @@
         <h2 class="text-xl font-bold text-gray-800">Riwayat Permohonan</h2>
     </div>
     
+    {{-- Search Bar --}}
+    <form action="{{ route('user.permohonan.history') }}" method="GET" class="flex flex-col gap-2 mb-2">
+        <input type="hidden" name="status" value="{{ request('status', 'semua') }}">
+        <div class="flex items-center gap-2">
+            <input type="text" name="search" value="{{ request('search') }}" 
+                   class="flex-1 px-4 py-3.5 bg-white border border-gray-200 rounded-2xl text-sm shadow-sm" 
+                   placeholder="Cari ID Register atau Nama Pelanggan...">
+            
+            <button type="submit" class="w-12 h-12 flex-shrink-0 bg-white border border-gray-200 rounded-2xl flex items-center justify-center shadow-sm">
+                @if(file_exists(public_path('images/cari.png')))
+                <img src="{{ asset('images/cari.png') }}" alt="Cari" style="width: 22px; height: 22px;">
+                @else
+                <span class="text-gray-400 text-lg">🔍</span>
+                @endif
+            </button>
+        </div>
+    </form>
+    
     {{-- Filter Tabs --}}
     <div class="bg-white rounded-2xl p-1 shadow-sm border border-gray-100">
         <div class="flex items-center justify-around">
@@ -21,22 +39,22 @@
                 $currentStatus = request()->get('status', 'semua');
             @endphp
             
-            <a href="{{ route('user.permohonan.history', ['status' => 'semua']) }}" 
+            <a href="{{ route('user.permohonan.history', ['status' => 'semua', 'search' => request('search')]) }}" 
                class="flex-1 text-center py-2 px-1 rounded-xl text-sm font-medium transition
                       {{ $currentStatus == 'semua' ? 'bg-yellow-100 text-yellow-800' : 'text-gray-500 hover:text-gray-700' }}">
                 Semua
             </a>
-            <a href="{{ route('user.permohonan.history', ['status' => 'pending']) }}" 
+            <a href="{{ route('user.permohonan.history', ['status' => 'pending', 'search' => request('search')]) }}" 
                class="flex-1 text-center py-2 px-1 rounded-xl text-sm font-medium transition
                       {{ $currentStatus == 'pending' ? 'bg-yellow-100 text-yellow-800' : 'text-gray-500 hover:text-gray-700' }}">
                 Menunggu
             </a>
-            <a href="{{ route('user.permohonan.history', ['status' => 'approved']) }}" 
+            <a href="{{ route('user.permohonan.history', ['status' => 'approved', 'search' => request('search')]) }}" 
                class="flex-1 text-center py-2 px-1 rounded-xl text-sm font-medium transition
                       {{ $currentStatus == 'approved' ? 'bg-green-100 text-green-800' : 'text-gray-500 hover:text-gray-700' }}">
                 Disetujui
             </a>
-            <a href="{{ route('user.permohonan.history', ['status' => 'rejected']) }}" 
+            <a href="{{ route('user.permohonan.history', ['status' => 'rejected', 'search' => request('search')]) }}" 
                class="flex-1 text-center py-2 px-1 rounded-xl text-sm font-medium transition
                       {{ $currentStatus == 'rejected' ? 'bg-red-100 text-red-800' : 'text-gray-500 hover:text-gray-700' }}">
                 Ditolak
@@ -67,13 +85,19 @@
                     <span class="text-sm text-gray-500">{{ $item->created_at->format('d M Y - H:i') }}</span>
                 </div>
             </div>
-            <div>
+            <div class="flex-shrink-0 flex items-center ml-2">
                 @if($item->status == 'pending')
-                <span class="badge badge-pending">Menunggu</span>
+                    @if($item->locked_by && $item->locked_at && $item->locked_at->diffInMinutes(now()) < 3)
+                        <span class="px-3 py-1 bg-orange-100 text-orange-700 text-xs font-bold rounded-full border border-orange-200 whitespace-nowrap">Sedang Diverifikasi</span>
+                    @else
+                        <span class="badge badge-pending whitespace-nowrap">Menunggu</span>
+                    @endif
                 @elseif($item->status == 'approved')
-                <span class="badge badge-approved">Disetujui</span>
+                <span class="badge badge-approved whitespace-nowrap">Disetujui</span>
+                @elseif($item->status == 'cancelled')
+                <span class="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-bold rounded-full border border-gray-200 whitespace-nowrap">Dibatalkan</span>
                 @else
-                <span class="badge badge-rejected">Ditolak</span>
+                <span class="badge badge-rejected whitespace-nowrap">Ditolak</span>
                 @endif
             </div>
         </div>

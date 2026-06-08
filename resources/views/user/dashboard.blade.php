@@ -1,7 +1,7 @@
 @extends('components.pln-layout')
 
-@section('title', 'Beranda - SIPEL PLN')
-@section('header-title', 'SIPEL PLN')
+@section('title', 'Beranda - E-Berlian')
+@section('header-title', 'E-Berlian')
 
 @section('content')
 {{-- Background Hijau Gradient --}}
@@ -13,10 +13,10 @@
         {{-- Teks Welcome --}}
         <div style="flex: 1; padding: 16px;">
             <h2 style="font-size: 20px; font-weight: 700; color: #1F2937; margin: 0 0 4px 0;">
-                Halo, {{ explode(' ', Auth::user()->name)[0] }}
+                Halo, {{ Auth::user()->name }}
             </h2>
             <p style="font-size: 14px; color: #6B7280; margin: 0;">
-                Selamat datang di SIPEL PLN
+                Selamat datang di E-Berlian
             </p>
         </div>
         
@@ -135,7 +135,7 @@
     
     @php
         $recentPermohonans = App\Models\Permohonan::where('user_id', Auth::id())
-            ->orderBy('updated_at', 'desc')
+            ->orderBy('created_at', 'desc')
             ->limit(3)
             ->get();
     @endphp
@@ -156,13 +156,19 @@
                     • {{ $permohonan->created_at->format('d M Y - H:i') }}
                 </p>
             </div>
-            <div>
+            <div class="flex-shrink-0 flex items-center ml-2">
                 @if($permohonan->status == 'pending')
-                <span class="badge badge-pending">Menunggu</span>
+                    @if($permohonan->locked_by && $permohonan->locked_at && $permohonan->locked_at->diffInMinutes(now()) < 3)
+                        <span class="px-3 py-1 bg-orange-100 text-orange-700 text-xs font-bold rounded-full border border-orange-200 whitespace-nowrap">Sedang Diverifikasi</span>
+                    @else
+                        <span class="badge badge-pending whitespace-nowrap">Menunggu</span>
+                    @endif
                 @elseif($permohonan->status == 'approved')
-                <span class="badge badge-approved">Disetujui</span>
+                <span class="badge badge-approved whitespace-nowrap">Disetujui</span>
+                @elseif($permohonan->status == 'cancelled')
+                <span class="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-bold rounded-full border border-gray-200 whitespace-nowrap">Dibatalkan</span>
                 @else
-                <span class="badge badge-rejected">Ditolak</span>
+                <span class="badge badge-rejected whitespace-nowrap">Ditolak</span>
                 @endif
             </div>
         </a>

@@ -54,6 +54,16 @@ class ProfileController extends Controller
         }
 
         $request->user()->no_telepon = $request->no_telepon;
+        if ($request->hasFile('avatar')) {
+            // Delete old avatar if exists
+            if ($request->user()->avatar && \Illuminate\Support\Facades\Storage::disk('public')->exists($request->user()->avatar)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($request->user()->avatar);
+            }
+            
+            $path = $request->file('avatar')->store('avatars', 'public');
+            $request->user()->avatar = $path;
+        }
+
         $request->user()->save();
         
         // Log Aktivitas - Update Profil

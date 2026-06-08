@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Berita Acara - SIPEL PLN</title>
+    <title>Berita Acara - E-Berlian</title>
     <style>
         @page {
             margin: 2.5cm;
@@ -69,13 +69,13 @@
     }
     
     // Fallback variables
-    $nomor_ba = $baLingkungan['nomor_ba'] ?? '...........................';
-    $nama_pihak_kesatu = $baLingkungan['nama_pihak_kesatu'] ?? '...........................';
-    $jabatan_pihak_kesatu = $baLingkungan['jabatan_pihak_kesatu'] ?? '...........................';
+    $nomor_ba = $baLingkungan['nomor_ba'] ?? '___________________________';
+    $nama_pihak_kesatu = $baLingkungan['nama_pihak_kesatu'] ?? '___________________________';
+    $jabatan_pihak_kesatu = $baLingkungan['jabatan_pihak_kesatu'] ?? '___________________________';
     $nama_pihak_kedua = $baLingkungan['nama_pihak_kedua'] ?? 'LEANDRA AGUNG TRI RADI PUTRA'; // Default PLN Manager
-    $luas_tanah = $baLingkungan['luas_tanah'] ?? '...........................';
-    $lokasi = $baLingkungan['lokasi'] ?? '...........................';
-    $nomor_sertifikat = $baLingkungan['nomor_sertifikat'] ?? '...........................';
+    $luas_tanah = $baLingkungan['luas_tanah'] ?? '___________________________';
+    $lokasi = $baLingkungan['lokasi'] ?? '___________________________';
+    $nomor_sertifikat = $baLingkungan['nomor_sertifikat'] ?? '___________________________';
     
     // Carbon for dates
     $tanggal_sekarang = \Carbon\Carbon::now()->locale('id');
@@ -180,7 +180,7 @@
     <tr>
         <td>Tanggal</td>
         <td>:</td>
-        <td>...................................</td>
+        <td>___________________________________</td>
     </tr>
     <tr>
         <td>Atas Nama</td>
@@ -247,43 +247,62 @@
 <!-- PAGE 3: GAMBAR SITUASI -->
 <div class="page-break"></div>
 
-<p style="font-size: 10pt;">
-    Lampiran Berita Acara,<br>
-    <span style="display:inline-block; width: 250px;"></span>PIHAK KEDUA : {{ $nomor_ba }}<br>
-    <span style="display:inline-block; width: 250px;"></span>Tanggal : ...........................
-</p>
+<div style="font-size: 10pt; width: 100%;">
+    <div style="float: left; width: 35%;">Lampiran Berita Acara:</div>
+    <div style="float: left; width: 65%;">
+        <table style="width: 100%; border: none;">
+            <tr>
+                <td style="width: 100px; font-weight: bold;">PIHAK KEDUA</td>
+                <td style="width: 10px;">:</td>
+                <td>{{ $nomor_ba }}</td>
+            </tr>
+            <tr>
+                <td style="font-weight: bold;">Tanggal</td>
+                <td>:</td>
+                <td>_______________________________________________________</td>
+            </tr>
+        </table>
+    </div>
+    <div style="clear: both;"></div>
+</div>
 
-<div class="title" style="margin-top: 40px; margin-bottom: 60px;">
+<div class="title" style="margin-top: 20px; margin-bottom: 15px; font-size: 12pt;">
     GAMBAR SITUASI LAHAN GARDU
 </div>
 
-<div style="height: 300px; border: 1px dashed #ccc; text-align: center; line-height: 300px; color: #999; margin-bottom: 40px;">
-    (Area Gambar Denah Lokasi Lahan Gardu)
-</div>
+@if(isset($baLingkungan['gambar_situasi_lahan_path']) && $baLingkungan['gambar_situasi_lahan_path'])
+    <div style="text-align: center; margin-bottom: 15px;">
+        <img src="{{ public_path('storage/' . $baLingkungan['gambar_situasi_lahan_path']) }}" style="max-width: 100%; max-height: 250px; padding: 5px;">
+    </div>
+@else
+    <div style="height: 250px; border: 1px dashed #ccc; text-align: center; line-height: 250px; color: #999; margin-bottom: 15px;">
+        (Area Gambar Denah Lokasi Lahan Gardu)
+    </div>
+@endif
 
 <table style="width: 100%;">
     <tr>
-        <td style="width: 120px;">Sebidang Tanah</td>
-        <td>:</td>
+        <td style="width: 130px;">Sebidang Tanah</td>
+        <td style="width: 10px;">:</td>
         <td></td>
     </tr>
     <tr>
         <td>Luas tanah</td>
         <td>:</td>
-        <td class="font-bold">{{ $luas_tanah }}</td>
+        <td>{{ $luas_tanah }}</td>
     </tr>
     <tr>
         <td>Lokasi</td>
         <td>:</td>
-        <td class="font-bold">{{ $lokasi }}</td>
+        <td>{{ $lokasi }}</td>
     </tr>
 </table>
 
-<p style="margin-top: 20px;">Dengan batas - batas sebagai berikut:</p>
+<div style="margin-top: 15px; margin-bottom: 5px;">Dengan batas - batas sebagai berikut :</div>
 <table style="width: 100%;">
     <tr>
-        <td style="width: 150px;">1. Utara</td>
-        <td style="width: 15px;">:</td>
+        <td style="width: 130px;">1. Utara</td>
+        <td style="width: 10px;">:</td>
         <td>{{ $baLingkungan['batas_utara'] ?? '-' }}</td>
     </tr>
     <tr>
@@ -303,7 +322,7 @@
     </tr>
 </table>
 
-<table class="signature-table" style="margin-top: 50px;">
+<table class="signature-table" style="margin-top: 20px;">
     <tr>
         <td>
             <strong>PIHAK KEDUA</strong><br>
@@ -315,7 +334,7 @@
                 <br><br><br><br>
             @endif
             <br>
-            <strong><u>{{ strtoupper($nama_pihak_kedua) }}</u></strong>
+            <strong>{{ strtoupper($nama_pihak_kedua) }}</strong>
         </td>
         <td>
             <strong>PIHAK KESATU</strong><br>
@@ -327,7 +346,7 @@
                 <br><br><br><br>
             @endif
             <br>
-            <strong><u>{{ strtoupper($nama_pihak_kesatu) }}</u></strong>
+            <strong>{{ strtoupper($nama_pihak_kesatu) }}</strong>
         </td>
     </tr>
 </table>

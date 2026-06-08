@@ -54,7 +54,28 @@ class VerifikasiController extends Controller
     public function show($id)
     {
         $permohonan = Permohonan::with('user', 'detailPenolakan')->findOrFail($id);
-        return view('admin.verifikasi.show', compact('permohonan'));
+        
+        // Tandai notifikasi terkait sebagai sudah dibaca untuk admin
+        Notifikasi::where('user_id', Auth::id())
+            ->where('permohonan_id', $id)
+            ->where('sudah_dibaca', false)
+            ->update(['sudah_dibaca' => true]);
+        // Logika Penguncian (Locking)
+        $isLockedByOther = false;
+        if ($permohonan->status == 'pending') {
+            if ($permohonan->locked_by && $permohonan->locked_by != Auth::id() && $permohonan->locked_at && $permohonan->locked_at->diffInMinutes(now()) < 3) {
+                // Dikunci oleh admin lain yang masih aktif (kurang dari 3 menit)
+                $isLockedByOther = true;
+            } else {
+                // Kunci permohonan ini untuk admin sekarang
+                $permohonan->update([
+                    'locked_by' => Auth::id(),
+                    'locked_at' => now(),
+                ]);
+            }
+        }
+            
+        return view('admin.verifikasi.show', compact('permohonan', 'isLockedByOther'));
     }
     
     public function approve(Request $request, $id)
@@ -66,6 +87,8 @@ class VerifikasiController extends Controller
             'catatan_admin' => $request->catatan_admin,
             'approved_at' => now(),
             'approved_by' => Auth::id(),
+            'locked_by' => null, // Lepas kunci
+            'locked_at' => null,
         ]);
         
         // HANYA catat riwayat jika ada penolakan sebelumnya (jumlah_perbaikan > 0)
@@ -133,6 +156,8 @@ class VerifikasiController extends Controller
                     'rejected_at' => now(),
                     'tanggal_reject' => now(),
                     'jumlah_perbaikan' => 3,
+                    'locked_by' => null, // Lepas kunci
+                    'locked_at' => null,
                 ]);
                 
                 $alasan = $this->buildAlasanLengkap($request);
@@ -192,6 +217,8 @@ class VerifikasiController extends Controller
                     'catatan_reject_global' => $request->catatan_reject_global,
                     'rejected_at' => now(),
                     'tanggal_reject' => now(),
+                    'locked_by' => null, // Lepas kunci
+                    'locked_at' => null,
                 ]);
                 
                 $alasan = $this->buildAlasanLengkap($request);
@@ -216,6 +243,30 @@ class VerifikasiController extends Controller
         });
         
         return redirect()->route('admin.verifikasi.index')->with('success', 'Permohonan diproses.');
+    }
+    
+    public function unlock(Request $request, $id)
+    {
+        $permohonan = Permohonan::find($id);
+        if ($permohonan && $permohonan->locked_by == Auth::id()) {
+            $permohonan->update([
+                'locked_by' => null,
+                'locked_at' => null,
+            ]);
+        }
+        return response()->json(['success' => true]);
+    }
+    
+    public function forceUnlock(Request $request, $id)
+    {
+        $permohonan = Permohonan::findOrFail($id);
+        
+        $permohonan->update([
+            'locked_by' => Auth::id(),
+            'locked_at' => now(),
+        ]);
+        
+        return redirect()->route('admin.verifikasi.show', $id)->with('success', 'Permohonan berhasil diambil alih.');
     }
     
     private function buildAlasanLengkap(Request $request): string

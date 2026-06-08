@@ -1,6 +1,6 @@
 @extends('components.pln-layout')
 
-@section('title', 'Form Permohonan - SIPEL PLN')
+@section('title', 'Form Permohonan - E-Berlian')
 @section('header-title', 'Permohonan')
 
 @section('content')

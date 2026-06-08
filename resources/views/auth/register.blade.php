@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Daftar - SIPEL PLN</title>
+    <title>Daftar - E-Berlian</title>
     
     {{-- Font Inter --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -33,9 +33,10 @@
             background: linear-gradient(135deg, var(--pln-primary-light) 0%, #E8F5F5 50%, var(--pln-primary-light) 100%);
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 16px;
+            padding: 24px 16px;
         }
         
         .register-container {
@@ -174,8 +175,11 @@
         
         {{-- Logo --}}
         <div class="logo-section">
-            <h1>⚡ SIPEL PLN</h1>
-            <p>Sistem Informasi Permohonan Pelanggan PLN</p>
+            <h1>⚡ E-Berlian</h1>
+            <div class="tagline">
+                Elektronik Berita Acara Lingkungan<br>
+                dan Pertanahan
+            </div>
         </div>
         
         {{-- Welcome --}}
@@ -271,6 +275,10 @@
             <a href="{{ route('login') }}">← Sudah punya akun? Login</a>
         </div>
         
+    </div>
+    
+    <div style="text-align: center; margin-top: 16px;">
+        <p style="font-size: 11px; color: #9CA3AF;">Sistem dibangun oleh Luqmanazet - Tim Magang 2026</p>
     </div>
 </body>
 </html>

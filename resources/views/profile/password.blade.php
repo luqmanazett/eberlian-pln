@@ -1,6 +1,6 @@
 @extends('components.pln-layout')
 
-@section('title', 'Password & Keamanan - SIPEL PLN')
+@section('title', 'Password & Keamanan - E-Berlian')
 @section('header-title', 'Password & Keamanan')
 @section('back-url', route('profile.index'))
 

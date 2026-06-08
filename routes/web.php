@@ -46,7 +46,10 @@ Route::middleware(['auth', 'role:user'])->prefix('user')->name('user.')->group(f
     Route::post('/notifikasi/mark-all-read', [NotifikasiController::class, 'markAllRead'])->name('notifikasi.markAllRead');
     
     Route::get('/permohonan/create', function () {
-        $jenis = request()->get('jenis', 'pasang_baru');
+        $jenis = request()->get('jenis');
+        if (!$jenis) {
+            return view('user.permohonan.select-jenis');
+        }
         return view('user.permohonan.livewire-create', compact('jenis'));
     })->name('permohonan.create');
     
@@ -54,6 +57,7 @@ Route::middleware(['auth', 'role:user'])->prefix('user')->name('user.')->group(f
     Route::get('/permohonan/success/{id}', [PermohonanController::class, 'success'])->name('permohonan.success');
     Route::get('/permohonan/history', [PermohonanController::class, 'history'])->name('permohonan.history');
     Route::get('/permohonan/{id}', [PermohonanController::class, 'show'])->name('permohonan.show');
+    Route::post('/permohonan/{id}/cancel', [PermohonanController::class, 'cancel'])->name('permohonan.cancel');
     Route::get('/permohonan/{id}/upload-ulang', [PermohonanController::class, 'uploadUlang'])->name('upload-ulang');
     Route::post('/permohonan/{id}/upload-ulang', [PermohonanController::class, 'submitUploadUlang'])->name('upload-ulang.submit');
     
@@ -75,6 +79,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/verifikasi/{id}', [VerifikasiController::class, 'show'])->name('verifikasi.show');
     Route::post('/verifikasi/{id}/approve', [VerifikasiController::class, 'approve'])->name('verifikasi.approve');
     Route::post('/verifikasi/{id}/reject', [VerifikasiController::class, 'reject'])->name('verifikasi.reject');
+    Route::post('/verifikasi/{id}/unlock', [VerifikasiController::class, 'unlock'])->name('verifikasi.unlock');
+    Route::post('/verifikasi/{id}/force-unlock', [VerifikasiController::class, 'forceUnlock'])->name('verifikasi.force-unlock');
     Route::get('/verifikasi/{id}/history-perbaikan', [VerifikasiController::class, 'showHistoryPerbaikan'])->name('verifikasi.history-perbaikan');
     
     // Export Permohonan Individual

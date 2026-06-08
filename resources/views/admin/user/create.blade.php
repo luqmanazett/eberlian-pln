@@ -1,6 +1,6 @@
 @extends('components.pln-layout')
 
-@section('title', 'Tambah User - SIPEL PLN')
+@section('title', 'Tambah User - E-Berlian')
 @section('header-title', 'Tambah User')
 
 @section('content')

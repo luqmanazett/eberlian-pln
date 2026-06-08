@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'SIPEL PLN')</title>
+    <title>@yield('title', 'E-Berlian')</title>
     
     {{-- Font Inter --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -44,37 +44,51 @@
             line-height: 1.5;
             -webkit-font-smoothing: antialiased;
             min-height: 100vh;
+            margin: 0;
+            padding: 0;
         }
         
         .mobile-container {
-            max-width: 480px;
-            margin: 0 auto;
+            width: 100%;
             background-color: var(--pln-gray-bg);
             min-height: 100vh;
-            position: relative;
+            display: flex;
+            flex-direction: column;
         }
         
-        /*Adminn Header*/
-       .app-header {
-    background: #008080;  /* Hijau Tosca yang lebih gelap */
-    color: white;
-    padding: 12px 16px;
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
+        /* Header */
+        .app-header {
+            background: #008080;
+            color: white;
+            padding: 12px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
         
-       .app-header h1 {
-    font-size: 18px;
-    font-weight: 700;
-    color: white;  /* 👈 Pastikan ini white */
-}
+        .app-header h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+        }
         
         /* Content Area */
         .app-content {
             padding: 16px;
-            padding-bottom: calc(80px + var(--safe-bottom));
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding-bottom: calc(80px + var(--safe-bottom)); /* Add padding back for fixed bottom nav */
+        }
+        
+        /* Custom Scrollbar for app-content */
+        .app-content::-webkit-scrollbar {
+            width: 4px;
+        }
+        .app-content::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
         }
         
         /* Cards */
@@ -171,9 +185,8 @@
         .bottom-nav {
             position: fixed;
             bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            max-width: 480px;
+            left: 0;
+            right: 0;
             width: 100%;
             background: white;
             border-top: 1px solid #E5E7EB;
@@ -182,6 +195,7 @@
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            z-index: 40;
         }
         
         .nav-item {
@@ -389,7 +403,7 @@
                         @endif
                     @endif
                     <div>
-                        <h1 style="line-height: 1.2;">@yield('header-title', 'SIPEL PLN')</h1>
+                        <h1 style="line-height: 1.2;">@yield('header-title', 'E-Berlian')</h1>
                         @hasSection('header-subtitle')
                         <p style="font-size: 11px; color: rgba(255,255,255,0.8); line-height: 1.2; font-weight: 400;">@yield('header-subtitle')</p>
                         @endif
@@ -446,8 +460,8 @@
             @endphp
             
             @if(!$hideCopyright)
-            <div style="text-align: center; padding: 8px 0; margin-top: 5px; margin-bottom: 16px;">
-                <p style="font-size: 11px; color: #9CA3AF; margin: 0;">© {{ date('Y') }} Luqmanazet. All rights reserved.</p>
+            <div style="text-align: center; padding: 8px 0; margin-top: auto; margin-bottom: 16px;">
+                <p style="font-size: 11px; color: #9CA3AF; margin: 0;">Sistem dibangun oleh Luqmanazet - Tim Magang 2026</p>
             </div>
             @endif
         </div>

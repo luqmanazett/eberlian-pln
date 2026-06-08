@@ -12,11 +12,13 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Notifikasi;
+use Livewire\Attributes\Url;
 
 class FormPermohonan extends Component
 {
     use WithFileUploads;
     
+    #[Url]
     public $currentStep = 1;
     public $totalSteps = 3;
     
@@ -39,6 +41,7 @@ class FormPermohonan extends Component
     
     // Opsi BA Lahan
     public $ba_lahan_option = 'upload';
+    public $gambar_situasi_lahan;
     public $ba_lahan_form = [
         'unit_pln' => '',
         'nama_pekerjaan' => '',
@@ -57,6 +60,8 @@ class FormPermohonan extends Component
     
     // Opsi BA Lingkungan
     public $ba_lingkungan_option = 'upload';
+    public $jenis_gardu = '';
+    public $luas_tanah_gardu = '';
     public $ba_lingkungan_form = [
         'nomor_ba' => '',
         'nama_pihak_kesatu' => '',
@@ -69,6 +74,7 @@ class FormPermohonan extends Component
         'batas_timur' => '',
         'batas_selatan' => '',
         'batas_barat' => '',
+        'gambar_situasi_lahan_path' => null,
     ];
     
     // Tanda tangan elektronik (untuk opsi form)
@@ -131,9 +137,29 @@ public function updatedBaLingkunganOption($value)
             'batas_timur' => '',
             'batas_selatan' => '',
             'batas_barat' => '',
+            'gambar_situasi_lahan_path' => null,
         ];
+        $this->gambar_situasi_lahan = null;
     }
     $this->checkNeedStep3();
+}
+
+public function updateLuasTanah()
+{
+    $sizes = [
+        'tembok_7r2' => '5 x 5 m',
+        'tembok_st17' => '5 x 7 m',
+        'tembok_st16' => '5 x 9 m',
+        'garpor' => '2 x 5 m',
+        'portal' => '2 x 2 m',
+        'cantol' => '2 x 1 m',
+    ];
+
+    if (array_key_exists($this->jenis_gardu, $sizes)) {
+        $this->luas_tanah_gardu = $sizes[$this->jenis_gardu];
+    } else {
+        $this->luas_tanah_gardu = '';
+    }
 }
     
     private function checkNeedStep3()
@@ -145,20 +171,21 @@ public function updatedBaLingkunganOption($value)
     Log::info('checkNeedStep3: ' . ($this->needStep3 ? 'true' : 'false'));
 }
    public function nextStep()
-{
-    // KHUSUS UNTUK ISI FORM - BYPASS SEMUA
-    if ($this->currentStep == 1) {
-        $this->currentStep = 2;
-    } elseif ($this->currentStep == 2) {
-        // Jika perlu Step 3, langsung pindah
-        if ($this->needStep3) {
-            $this->currentStep = 3;
-        } else {
-            // Jika tidak perlu, submit
-            $this->submit();
-        }
-    }
-}
+   {
+       if ($this->currentStep == 1) {
+           $this->validateStep1();
+           $this->currentStep = 2;
+       } elseif ($this->currentStep == 2) {
+           $this->validateStep2();
+           // Jika perlu Step 3, langsung pindah
+           if ($this->needStep3) {
+               $this->currentStep = 3;
+           } else {
+               // Jika tidak perlu, submit
+               $this->submit();
+           }
+       }
+   }
     
     public function previousStep()
     {
@@ -215,11 +242,21 @@ public function updatedBaLingkunganOption($value)
         if ($this->ba_lingkungan_option == 'upload') {
             $rules['dokumen_ba_lingkungan'] = 'required|file|mimes:pdf,jpg,jpeg,png|max:5120';
         } else {
+            $this->ba_lingkungan_form['luas_tanah'] = $this->luas_tanah_gardu;
+            $this->ba_lingkungan_form['jenis_gardu'] = $this->jenis_gardu;
+            
             $rules['ba_lingkungan_form.nomor_ba'] = 'required';
             $rules['ba_lingkungan_form.nama_pihak_kesatu'] = 'required';
+            $rules['ba_lingkungan_form.jabatan_pihak_kesatu'] = 'required';
             $rules['ba_lingkungan_form.nama_pihak_kedua'] = 'required';
             $rules['ba_lingkungan_form.luas_tanah'] = 'required';
             $rules['ba_lingkungan_form.lokasi'] = 'required';
+            $rules['ba_lingkungan_form.nomor_sertifikat'] = 'required';
+            $rules['ba_lingkungan_form.batas_utara'] = 'required';
+            $rules['ba_lingkungan_form.batas_timur'] = 'required';
+            $rules['ba_lingkungan_form.batas_selatan'] = 'required';
+            $rules['ba_lingkungan_form.batas_barat'] = 'required';
+            $rules['gambar_situasi_lahan'] = 'required|image|max:5120';
         }
         
         // Validasi dokumen lainnya
@@ -300,6 +337,12 @@ public function updatedBaLingkunganOption($value)
                 'public'
             );
         } elseif ($this->ba_lingkungan_option == 'form') {
+            if ($this->gambar_situasi_lahan) {
+                $this->ba_lingkungan_form['gambar_situasi_lahan_path'] = $this->gambar_situasi_lahan->store(
+                    "permohonan/" . Auth::id() . "/gambar_situasi",
+                    'public'
+                );
+            }
             $baLingkunganData = json_encode($this->ba_lingkungan_form);
         }
         

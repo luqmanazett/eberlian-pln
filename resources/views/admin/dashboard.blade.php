@@ -1,7 +1,7 @@
 @extends('components.pln-layout')
 
-@section('title', 'Dashboard Admin - SIPEL PLN')
-@section('header-title', 'SIPEL PLN')
+@section('title', 'Dashboard Admin - E-Berlian')
+@section('header-title', 'E-Berlian')
 
 @section('content')
 
@@ -14,7 +14,7 @@
         {{-- Teks Welcome --}}
         <div style="flex: 1; padding: 16px;">
             <h2 style="font-size: 20px; font-weight: 700; color: #1F2937; margin: 0 0 4px 0;">
-                Halo, Admin PLN 
+                Halo, {{ Auth::user()->name }}
             </h2>
             <p style="font-size: 14px; color: #6B7280; margin: 0;">
                 Selamat datang kembali
@@ -199,9 +199,15 @@
                 </div>
                 <div>
                     @if($item->status == 'pending')
-                    <span class="badge badge-pending">Menunggu</span>
+                        @if($item->locked_by && $item->locked_at && $item->locked_at->diffInMinutes(now()) < 3)
+                            <span class="px-3 py-1 rounded-full text-xs font-medium border border-orange-200" style="background: #FFF7ED; color: #C2410C;">👀 Sedang Direview</span>
+                        @else
+                            <span class="badge badge-pending">Menunggu</span>
+                        @endif
                     @elseif($item->status == 'approved')
                     <span class="badge badge-approved">Disetujui</span>
+                    @elseif($item->status == 'cancelled')
+                    <span class="px-3 py-1 rounded-full text-xs font-medium" style="background: #F3F4F6; color: #374151;">Dibatalkan</span>
                     @else
                     <span class="badge badge-rejected">Ditolak</span>
                     @endif

@@ -1,6 +1,6 @@
 @extends('components.pln-layout')
 
-@section('title', 'Management Dashboard - SIPEL PLN')
+@section('title', 'Management Dashboard - E-Berlian')
 
 @section('content')
 <div class="max-w-lg mx-auto">

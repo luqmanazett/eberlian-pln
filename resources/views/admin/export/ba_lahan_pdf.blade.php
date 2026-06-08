@@ -2,26 +2,25 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Berita Acara Penilaian Dampak - SIPEL PLN</title>
+    <title>Berita Acara Penilaian Dampak - E-Berlian</title>
     <style>
         @page {
-            margin: 2.5cm;
+            margin: 1.5cm;
         }
         body { 
             font-family: Arial, Helvetica, sans-serif; 
-            font-size: 11pt; 
-            line-height: 1.5;
+            font-size: 10.5pt; 
+            line-height: 1.4;
             color: #000;
         }
         .text-center { text-align: center; }
         .font-bold { font-weight: bold; }
         .title {
-            font-size: 12pt;
+            font-size: 11pt;
             font-weight: bold;
-            font-style: italic;
             text-align: center;
-            color: #006699;
-            margin-bottom: 25px;
+            color: #000;
+            margin-bottom: 15px;
         }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; margin-bottom: 20px;}
         td { vertical-align: top; padding: 2px 0;}
@@ -31,21 +30,21 @@
         
         .signature-table {
             width: 100%;
-            margin-top: 40px;
+            margin-top: 15px;
         }
         .signature-table td {
             width: 50%;
             vertical-align: bottom;
         }
         .signature-img {
-            height: 80px;
+            height: 70px;
             object-fit: contain;
-            margin-top: 5px;
-            margin-bottom: 5px;
+            margin-top: 2px;
+            margin-bottom: 2px;
         }
         .strike { text-decoration: line-through; }
-        ol { margin-top: 5px; padding-left: 20px; }
-        ol li { margin-bottom: 8px; text-align: justify; }
+        ol { margin-top: 2px; padding-left: 20px; margin-bottom: 5px; }
+        ol li { margin-bottom: 4px; text-align: justify; }
         .small-italic { font-size: 9pt; font-style: italic; }
     </style>
 </head>
@@ -68,7 +67,7 @@
 @endphp
 
 <div class="title">
-    Template Berita Acara Penilaian Dampak Terhadap Pekerjaan Jaringan Distribusi<br>
+    BERITA ACARA PENILAIAN DAMPAK TERHADAP PEKERJAAN JARINGAN DISTRIBUSI<br>
     (Perluasan/Rehabilitasi)
 </div>
 
@@ -81,36 +80,36 @@
     <tr>
         <td class="col-label">Unit PLN</td>
         <td class="col-colon">:</td>
-        <td><span class="font-bold">{{ strtoupper($data['unit_pln'] ?? '........................................') }}</span></td>
+        <td>{{ str_replace('ULP ', '', strtoupper($data['unit_pln'] ?? '________________________________________')) }}</td>
     </tr>
     <tr>
         <td class="col-label">Nama Pekerjaan</td>
         <td class="col-colon">:</td>
-        <td><span class="font-bold">{{ strtoupper($data['nama_pekerjaan'] ?? '........................................') }}</span></td>
+        <td>{{ strtoupper($data['nama_pekerjaan'] ?? '________________________________________') }}</td>
     </tr>
     <tr>
         <td class="col-label">Tanggal Rilis BASTP</td>
         <td class="col-colon">:</td>
-        <td><span class="font-bold">........................................</span></td>
+        <td>________________________________________</td>
     </tr>
     <tr>
         <td class="col-label">Desa/Kelurahan</td>
         <td class="col-colon">:</td>
-        <td><span class="font-bold">{{ ucwords($data['desa_kelurahan'] ?? '........................................') }}</span></td>
+        <td>{{ ucwords($data['desa_kelurahan'] ?? '________________________________________') }}</td>
     </tr>
     <tr>
         <td class="col-label">Kecamatan</td>
         <td class="col-colon">:</td>
-        <td><span class="font-bold">{{ ucwords($data['kecamatan'] ?? '........................................') }}</span></td>
+        <td>{{ ucwords($data['kecamatan'] ?? '________________________________________') }}</td>
     </tr>
     <tr>
         <td class="col-label">Kabupaten/Kota</td>
         <td class="col-colon">:</td>
-        <td><span class="font-bold">{{ ucwords($data['kabupaten_kota'] ?? '........................................') }}</span></td>
+        <td>{{ ucwords($data['kabupaten_kota'] ?? '________________________________________') }}</td>
     </tr>
 </table>
 
-<p style="text-align: justify; margin-top: 15px;">
+<p style="text-align: justify; margin-top: 8px;">
     Sehubungan dengan Pekerjaan Distribusi oleh PT PLN (persero), maka dengan surat ini:
 </p>
 
@@ -118,26 +117,26 @@
     <tr>
         <td class="col-label">Nama</td>
         <td class="col-colon">:</td>
-        <td><span class="font-bold">{{ strtoupper($data['nama_pemilik'] ?? '........................................') }}</span></td>
+        <td>{{ strtoupper($data['nama_pemilik'] ?? '________________________________________') }}</td>
     </tr>
     <tr>
         <td class="col-label">No Telepon</td>
         <td class="col-colon">:</td>
-        <td><span class="font-bold">{{ $data['no_telepon_pemilik'] ?? '........................................' }}</span></td>
+        <td>{{ $data['no_telepon_pemilik'] ?? '________________________________________' }}</td>
     </tr>
     <tr>
         <td class="col-label">Alamat</td>
         <td class="col-colon">:</td>
-        <td><span class="font-bold">{{ ucwords($data['alamat_pemilik'] ?? '........................................') }}</span></td>
+        <td>{{ ucwords($data['alamat_pemilik'] ?? '________________________________________') }}</td>
     </tr>
     <tr>
         <td class="col-label">Status</td>
         <td class="col-colon">:</td>
-        <td><span class="font-bold">{{ ucwords($data['status_pemilik'] ?? '........................................') }}</span></td>
+        <td>{{ ucwords($data['status_pemilik'] ?? '________________________________________') }}</td>
     </tr>
 </table>
 
-<p style="text-align: justify; margin-top: 15px;">
+<p style="text-align: justify; margin-top: 8px; margin-bottom: 5px;">
     Menyatakan bahwa Pekerjaan Distribusi yang dibangun di lahan tersebut (<span class="small-italic">*dicoret yang tidak sesuai</span>):
 </p>
 
@@ -167,23 +166,23 @@
     </li>
 </ol>
 
-<p style="text-align: justify; margin-top: 15px;">
+<p style="text-align: justify; margin-top: 8px;">
     Demikian pernyataan ini dibuat untuk dipergunakan sebaik-baiknya.
 </p>
 
-<div style="margin-top: 15px;">
-    Tempat: <strong>{{ ucwords($data['kabupaten_kota'] ?? '....................') }}</strong> ; Tanggal: <strong>{{ $tanggal_lengkap }}</strong>
+<div style="margin-top: 8px;">
+    Tempat: {{ ucwords($data['kabupaten_kota'] ?? '____________________') }} ; Tanggal: <strong>{{ $tanggal_lengkap }}</strong>
 </div>
 
 <table class="signature-table">
     <tr>
         <td style="width: 50%;">
-            Unit PLN <strong>{{ strtoupper($data['unit_pln'] ?? '..................') }}</strong>
+            Unit PLN {{ str_replace('ULP ', '', strtoupper($data['unit_pln'] ?? '__________________')) }}
             <br><br><br><br><br>
-            Nama: ........................................<br>
-            NIP: ........................................
+            Nama: ________________________________________<br>
+            NIP: ________________________________________
         </td>
-        <td style="width: 50%; padding-left: 20px;">
+        <td style="width: 50%; padding-left: 160px;">
             <span class="small-italic">
             Pemilik lahan/<br>
             Masyarakat terdampak/<br>
@@ -197,12 +196,12 @@
                 <br><br><br><br>
             @endif
             <br>
-            Nama: <strong>{{ strtoupper($data['nama_pemilik'] ?? '........................................') }}</strong>
+            Nama: <strong>{{ strtoupper($data['nama_pemilik'] ?? '________________________________________') }}</strong>
         </td>
     </tr>
 </table>
 
-<div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 5px;" class="small-italic">
+<div style="margin-top: 15px; border-top: 1px solid #ccc; padding-top: 5px;" class="small-italic">
     * Dicoret yang tidak sesuai
 </div>
 

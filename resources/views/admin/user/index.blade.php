@@ -1,6 +1,6 @@
 @extends('components.pln-layout')
 
-@section('title', 'Manajemen User - SIPEL PLN')
+@section('title', 'Manajemen User - E-Berlian')
 @section('header-title', 'Manajemen User')
 
 @section('content')
@@ -117,8 +117,10 @@
     .btn-teal:hover { background-color: #1a9c8d; }
     
     /* Overriding layout padding to allow full width banner */
-    .content-wrapper {
-        padding: 0 !important;
+    .app-content {
+        padding-top: 0 !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
     }
 </style>
 
@@ -134,12 +136,11 @@
         <div class="relative z-10 flex flex-col gap-4">
             <div class="flex justify-between items-start">
                 <div class="flex items-start gap-3">
-                    <a href="{{ route('admin.dashboard') }}" class="mt-1 text-white hover:text-gray-200 transition">
+                    <a href="{{ route('profile.index') }}" class="mt-1 text-white hover:text-gray-200 transition">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
                     </a>
                     <div>
-                        <h1 class="text-xl font-bold mb-1">Manajemen User</h1>
-                        <p class="text-white/80 text-[11px]">Kelola semua akun pengguna</p>
+                        <p class="text-white font-bold text-lg mt-1">Kelola semua akun pengguna</p>
                     </div>
                 </div>
                 <a href="{{ route('admin.user.create') }}" class="btn-teal px-3 py-2 text-xs flex items-center gap-1 shadow-lg">
@@ -238,8 +239,12 @@
             <div class="bg-white rounded-xl border border-gray-100 p-4 shadow-sm flex flex-col gap-3">
                 <div class="flex items-start justify-between gap-2">
                     <div class="flex items-center gap-3 flex-1 min-w-0">
-                        <div class="avatar-img shadow-sm border border-gray-100 flex-shrink-0">
-                            <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>
+                        <div class="avatar-img shadow-sm border border-gray-100 flex-shrink-0 overflow-hidden">
+                            @if($user->avatar)
+                                <img src="{{ asset('storage/' . $user->avatar) }}" alt="Avatar" class="w-full h-full object-cover">
+                            @else
+                                <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=E5E7EB&color=6B7280&size=40" alt="Avatar" class="w-full h-full object-cover">
+                            @endif
                         </div>
                         <div class="min-w-0 flex-1">
                             <p class="font-bold text-gray-800 text-sm leading-tight truncate">{{ $user->name }}</p>
@@ -264,13 +269,9 @@
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
                         </button>
                         @if($user->id != Auth::id())
-                        <form action="{{ route('admin.user.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Yakin hapus user ini?')" class="inline-block m-0 p-0">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="action-btn delete" title="Hapus">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                            </button>
-                        </form>
+                        <button type="button" onclick="openDeleteModal({{ $user->id }}, '{{ addslashes($user->name) }}')" class="action-btn delete" title="Hapus">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        </button>
                         @endif
                     </div>
                 </div>
@@ -326,6 +327,24 @@
     </div>
 </div>
 
+{{-- Modal Hapus Akun --}}
+<div id="deleteModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-[24px] w-full max-w-sm p-6 shadow-xl text-center">
+        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        </div>
+        <h3 class="text-xl font-bold text-gray-800 mb-2">yakin menghapus akun?</h3>
+        <p class="text-sm text-gray-500 mb-6">Anda akan menghapus akun <span id="deleteUserName" class="font-bold text-gray-700"></span>. Secara Permanen.</p>
+        
+        <form id="deleteForm" method="POST" class="flex gap-3">
+            @csrf
+            @method('DELETE')
+            <button type="button" onclick="closeDeleteModal()" class="w-full py-3 rounded-xl border border-gray-200 text-gray-600 font-semibold hover:bg-gray-50 transition">Batal</button>
+            <button type="submit" class="w-full py-3 rounded-xl bg-red-500 text-white font-semibold hover:bg-red-600 transition shadow-lg shadow-red-500/30">Hapus</button>
+        </form>
+    </div>
+</div>
+
 <script>
     function openResetModal(id, name) {
         document.getElementById('resetUserName').textContent = name;
@@ -336,6 +355,17 @@
     function closeResetModal() {
         document.getElementById('resetModal').classList.add('hidden');
         document.getElementById('resetModal').classList.remove('flex');
+    }
+
+    function openDeleteModal(id, name) {
+        document.getElementById('deleteUserName').textContent = name;
+        document.getElementById('deleteForm').action = '/admin/user/' + id;
+        document.getElementById('deleteModal').classList.remove('hidden');
+        document.getElementById('deleteModal').classList.add('flex');
+    }
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').classList.add('hidden');
+        document.getElementById('deleteModal').classList.remove('flex');
     }
 </script>
 @endsection
