@@ -39,7 +39,9 @@ class Permohonan extends Model
         
         // Tanda Tangan
         'ttd_ba_lahan',
+        'ttd_ba_lahan_kedua',
         'ttd_ba_lingkungan',
+        'ttd_ba_lingkungan_kedua',
         
         // Status & Verifikasi
         'status',

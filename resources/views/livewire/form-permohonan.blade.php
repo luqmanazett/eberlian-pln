@@ -117,13 +117,50 @@
             <label class="block font-medium mb-3">BA Lingkungan (Penilaian Dampak) <span class="text-red-500">*</span></label>
             
             {{-- Pilih Opsi --}}
-           <div class="mb-4">
-    <label class="block text-xs font-medium mb-1">Pilih Metode <span class="text-red-500">*</span></label>
-    <select wire:model.live="ba_lahan_option" class="input-field text-sm truncate">
-        <option value="upload">📤 Upload Dokumen</option>
-        <option value="form">📝 Isi Form Online</option>
-    </select>
-</div>
+            <div class="mb-5">
+                <label class="block text-sm font-medium text-gray-700 mb-3">Metode Pengisian <span class="text-red-500">*</span></label>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {{-- Opsi Upload --}}
+                    <div wire:click="$set('ba_lahan_option', 'upload')" class="h-full p-4 rounded-xl border-2 transition-all duration-300 cursor-pointer group {{ $ba_lahan_option == 'upload' ? 'border-pln-primary bg-teal-50/50 shadow-md ring-1 ring-pln-primary/20' : 'border-gray-200 bg-white hover:border-pln-primary/40 hover:bg-gray-50' }}">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center transition-colors {{ $ba_lahan_option == 'upload' ? 'bg-pln-primary text-white shadow-sm' : 'bg-gray-100 text-gray-500 group-hover:bg-gray-200' }}">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-bold text-sm transition-colors {{ $ba_lahan_option == 'upload' ? 'text-pln-primary' : 'text-gray-700' }}">Upload Dokumen</div>
+                                <div class="text-xs text-gray-500 mt-0.5">Unggah file PDF/Scan dokumen yang sudah dicetak.</div>
+                            </div>
+                            @if($ba_lahan_option == 'upload')
+                            <div class="w-5 h-5 rounded-full bg-pln-primary text-white flex items-center justify-center shadow-sm">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                            </div>
+                            @else
+                            <div class="w-5 h-5 rounded-full border-2 border-gray-300"></div>
+                            @endif
+                        </div>
+                    </div>
+
+                    {{-- Opsi Form --}}
+                    <div wire:click="$set('ba_lahan_option', 'form')" class="h-full p-4 rounded-xl border-2 transition-all duration-300 cursor-pointer group {{ $ba_lahan_option == 'form' ? 'border-pln-primary bg-teal-50/50 shadow-md ring-1 ring-pln-primary/20' : 'border-gray-200 bg-white hover:border-pln-primary/40 hover:bg-gray-50' }}">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center transition-colors {{ $ba_lahan_option == 'form' ? 'bg-pln-primary text-white shadow-sm' : 'bg-gray-100 text-gray-500 group-hover:bg-gray-200' }}">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-bold text-sm transition-colors {{ $ba_lahan_option == 'form' ? 'text-pln-primary' : 'text-gray-700' }}">Isi Form Online</div>
+                                <div class="text-xs text-gray-500 mt-0.5">Isi data langsung dan TTD digital.</div>
+                            </div>
+                            @if($ba_lahan_option == 'form')
+                            <div class="w-5 h-5 rounded-full bg-pln-primary text-white flex items-center justify-center shadow-sm">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                            </div>
+                            @else
+                            <div class="w-5 h-5 rounded-full border-2 border-gray-300"></div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
             
             {{-- Opsi Upload --}}
             @if($ba_lahan_option == 'upload')
@@ -222,13 +259,50 @@
             <label class="block font-medium mb-3">BA Lahan (Serah Terima Gardu) <span class="text-red-500">*</span></label>
             
             {{-- Pilih Opsi --}}
-         <div class="mb-4">
-    <label class="block text-xs font-medium mb-1">Pilih Metode <span class="text-red-500">*</span></label>
-    <select wire:model.live="ba_lingkungan_option" class="input-field text-sm truncate">
-        <option value="upload">📤 Upload Dokumen</option>
-        <option value="form">📝 Isi Form Online</option>
-    </select>
-</div>
+            <div class="mb-5">
+                <label class="block text-sm font-medium text-gray-700 mb-3">Metode Pengisian <span class="text-red-500">*</span></label>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {{-- Opsi Upload --}}
+                    <div wire:click="$set('ba_lingkungan_option', 'upload')" class="h-full p-4 rounded-xl border-2 transition-all duration-300 cursor-pointer group {{ $ba_lingkungan_option == 'upload' ? 'border-pln-primary bg-teal-50/50 shadow-md ring-1 ring-pln-primary/20' : 'border-gray-200 bg-white hover:border-pln-primary/40 hover:bg-gray-50' }}">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center transition-colors {{ $ba_lingkungan_option == 'upload' ? 'bg-pln-primary text-white shadow-sm' : 'bg-gray-100 text-gray-500 group-hover:bg-gray-200' }}">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-bold text-sm transition-colors {{ $ba_lingkungan_option == 'upload' ? 'text-pln-primary' : 'text-gray-700' }}">Upload Dokumen</div>
+                                <div class="text-xs text-gray-500 mt-0.5">Unggah file PDF/Scan dokumen yang sudah dicetak.</div>
+                            </div>
+                            @if($ba_lingkungan_option == 'upload')
+                            <div class="w-5 h-5 rounded-full bg-pln-primary text-white flex items-center justify-center shadow-sm">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                            </div>
+                            @else
+                            <div class="w-5 h-5 rounded-full border-2 border-gray-300"></div>
+                            @endif
+                        </div>
+                    </div>
+
+                    {{-- Opsi Form --}}
+                    <div wire:click="$set('ba_lingkungan_option', 'form')" class="h-full p-4 rounded-xl border-2 transition-all duration-300 cursor-pointer group {{ $ba_lingkungan_option == 'form' ? 'border-pln-primary bg-teal-50/50 shadow-md ring-1 ring-pln-primary/20' : 'border-gray-200 bg-white hover:border-pln-primary/40 hover:bg-gray-50' }}">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full flex items-center justify-center transition-colors {{ $ba_lingkungan_option == 'form' ? 'bg-pln-primary text-white shadow-sm' : 'bg-gray-100 text-gray-500 group-hover:bg-gray-200' }}">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-bold text-sm transition-colors {{ $ba_lingkungan_option == 'form' ? 'text-pln-primary' : 'text-gray-700' }}">Isi Form Online</div>
+                                <div class="text-xs text-gray-500 mt-0.5">Isi data langsung dan TTD digital.</div>
+                            </div>
+                            @if($ba_lingkungan_option == 'form')
+                            <div class="w-5 h-5 rounded-full bg-pln-primary text-white flex items-center justify-center shadow-sm">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                            </div>
+                            @else
+                            <div class="w-5 h-5 rounded-full border-2 border-gray-300"></div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
             
             {{-- Opsi Upload --}}
             @if($ba_lingkungan_option == 'upload')
@@ -416,13 +490,28 @@
         </div>
         
         @if($ba_lahan_option == 'form')
-        <div class="card">
-            <label class="font-medium text-gray-800 mb-3 block">Tanda Tangan BA Lingkungan (Elektronik) <span class="text-red-500">*</span></label>
-            <iframe src="/canvas-signature.html?id=ba_lahan_elektronik" 
-                    style="width: 100%; height: 220px; border: none; border-radius: 12px; background: white;">
-            </iframe>
-            <input type="hidden" id="ttd_ba_lahan_elektronik_input" wire:model="ttd_ba_lahan_elektronik">
-            @error('ttd_ba_lahan_elektronik') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+        <div class="card space-y-4">
+            <div class="border-b pb-2">
+                <h3 class="font-bold text-gray-800 text-sm">Tanda Tangan BA Lingkungan (Penilaian Dampak)</h3>
+            </div>
+            
+            <div class="space-y-2">
+                <label class="font-medium text-gray-700 text-xs block">Pihak Kesatu (Pemilik Lahan) <span class="text-red-500">*</span></label>
+                <iframe src="/canvas-signature.html?id=ba_lahan_elektronik" 
+                        style="width: 100%; height: 220px; border: none; border-radius: 12px; background: white;">
+                </iframe>
+                <input type="hidden" id="ttd_ba_lahan_elektronik_input" wire:model="ttd_ba_lahan_elektronik">
+                @error('ttd_ba_lahan_elektronik') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+            </div>
+
+            <div class="space-y-2 pt-4 border-t border-dashed">
+                <label class="font-medium text-gray-700 text-xs block">Pihak Kedua (PLN / ULP Manager) <span class="text-red-500">*</span></label>
+                <iframe src="/canvas-signature.html?id=ba_lahan_elektronik_kedua" 
+                        style="width: 100%; height: 220px; border: none; border-radius: 12px; background: white;">
+                </iframe>
+                <input type="hidden" id="ttd_ba_lahan_elektronik_kedua_input" wire:model="ttd_ba_lahan_elektronik_kedua">
+                @error('ttd_ba_lahan_elektronik_kedua') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+            </div>
         </div>
         @else
         <div class="card bg-green-50">
@@ -431,13 +520,28 @@
         @endif
         
         @if($ba_lingkungan_option == 'form')
-        <div class="card">
-            <label class="font-medium text-gray-800 mb-3 block">Tanda Tangan BA Lahan (Elektronik) <span class="text-red-500">*</span></label>
-            <iframe src="/canvas-signature.html?id=ba_lingkungan_elektronik" 
-                    style="width: 100%; height: 220px; border: none; border-radius: 12px; background: white;">
-            </iframe>
-            <input type="hidden" id="ttd_ba_lingkungan_elektronik_input" wire:model="ttd_ba_lingkungan_elektronik">
-            @error('ttd_ba_lingkungan_elektronik') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+        <div class="card space-y-4">
+            <div class="border-b pb-2">
+                <h3 class="font-bold text-gray-800 text-sm">Tanda Tangan BA Lahan (Serah Terima Gardu)</h3>
+            </div>
+            
+            <div class="space-y-2">
+                <label class="font-medium text-gray-700 text-xs block">Pihak Kesatu (Pemilik Lahan) <span class="text-red-500">*</span></label>
+                <iframe src="/canvas-signature.html?id=ba_lingkungan_elektronik" 
+                        style="width: 100%; height: 220px; border: none; border-radius: 12px; background: white;">
+                </iframe>
+                <input type="hidden" id="ttd_ba_lingkungan_elektronik_input" wire:model="ttd_ba_lingkungan_elektronik">
+                @error('ttd_ba_lingkungan_elektronik') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+            </div>
+
+            <div class="space-y-2 pt-4 border-t border-dashed">
+                <label class="font-medium text-gray-700 text-xs block">Pihak Kedua (PLN / ULP Manager) <span class="text-red-500">*</span></label>
+                <iframe src="/canvas-signature.html?id=ba_lingkungan_elektronik_kedua" 
+                        style="width: 100%; height: 220px; border: none; border-radius: 12px; background: white;">
+                </iframe>
+                <input type="hidden" id="ttd_ba_lingkungan_elektronik_kedua_input" wire:model="ttd_ba_lingkungan_elektronik_kedua">
+                @error('ttd_ba_lingkungan_elektronik_kedua') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+            </div>
         </div>
         @else
         <div class="card bg-green-50">
@@ -507,20 +611,25 @@ window.addEventListener('message', function(event) {
 });
 
 // Auto-scroll to validation error
-document.addEventListener('livewire:init', () => {
-    Livewire.hook('commit', ({ component, succeed }) => {
-        succeed(() => {
-            setTimeout(() => {
-                // Cari elemen error yang sesungguhnya (bukan tanda bintang/asterisk merah pada label)
-                const errorElements = Array.from(document.querySelectorAll('.text-red-500'));
-                const firstError = errorElements.find(el => el.textContent.trim() !== '*');
-                
-                if (firstError) {
-                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+window.addEventListener('validation-failed', () => {
+    setTimeout(() => {
+        // Cari elemen error yang sesungguhnya (bukan tanda bintang/asterisk merah pada label)
+        const errorElements = Array.from(document.querySelectorAll('.text-red-500'));
+        const firstError = errorElements.find(el => el.textContent.trim() !== '*');
+        
+        if (firstError) {
+            firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // Cari input terdekat dan fokuskan
+            const container = firstError.closest('div');
+            if (container) {
+                const input = container.querySelector('input, select, textarea');
+                if (input) {
+                    input.focus();
                 }
-            }, 100);
-        });
-    });
+            }
+        }
+    }, 150);
 });
 </script>
 </div>

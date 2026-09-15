@@ -185,6 +185,7 @@ class PermohonanController extends Controller
             if ($request->has('ba_lahan_form')) {
                 $updateData['ba_lahan_data'] = json_encode($request->ba_lahan_form);
                 $updateData['ttd_ba_lahan'] = $request->ttd_ba_lahan ?? null;
+                $updateData['ttd_ba_lahan_kedua'] = $request->ttd_ba_lahan_kedua ?? null;
             }
         }
     }
@@ -206,6 +207,7 @@ class PermohonanController extends Controller
             if ($request->has('ba_lingkungan_form')) {
                 $updateData['ba_lingkungan_data'] = json_encode($request->ba_lingkungan_form);
                 $updateData['ttd_ba_lingkungan'] = $request->ttd_ba_lingkungan ?? null;
+                $updateData['ttd_ba_lingkungan_kedua'] = $request->ttd_ba_lingkungan_kedua ?? null;
             }
         }
     }

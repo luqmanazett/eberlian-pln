@@ -79,7 +79,9 @@ class FormPermohonan extends Component
     
     // Tanda tangan elektronik (untuk opsi form)
     public $ttd_ba_lahan_elektronik;
+    public $ttd_ba_lahan_elektronik_kedua;
     public $ttd_ba_lingkungan_elektronik;
+    public $ttd_ba_lingkungan_elektronik_kedua;
     
     // UI State
     public $showIdpelField = false;
@@ -211,7 +213,12 @@ public function updateLuasTanah()
             $rules['idpel'] = 'nullable|string|max:50'; // Peningkatan Keandalan
         }
         
-        $this->validate($rules);
+        try {
+            $this->validate($rules);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $this->dispatch('validation-failed');
+            throw $e;
+        }
     }
     
     private function validateStep2()
@@ -264,7 +271,12 @@ public function updateLuasTanah()
         $rules['dokumen_imb'] = 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120';
         $rules['dokumen_sertifikat_lahan'] = 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120';
         
-        $this->validate($rules, $messages);
+        try {
+            $this->validate($rules, $messages);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $this->dispatch('validation-failed');
+            throw $e;
+        }
     }
     
     
@@ -294,6 +306,37 @@ public function updateLuasTanah()
    public function submit()
 {
     // DEBUG: Log TTD
+    // Validate Step 3 signatures
+    $rules = [];
+    $messages = [];
+    
+    if ($this->ba_lahan_option == 'form') {
+        $rules['ttd_ba_lahan_elektronik'] = 'required|string|min:100';
+        $rules['ttd_ba_lahan_elektronik_kedua'] = 'required|string|min:100';
+        $messages['ttd_ba_lahan_elektronik.required'] = 'Tanda tangan Pihak Kesatu BA Lingkungan wajib diisi.';
+        $messages['ttd_ba_lahan_elektronik_kedua.required'] = 'Tanda tangan Pihak Kedua BA Lingkungan wajib diisi.';
+        $messages['ttd_ba_lahan_elektronik.min'] = 'Tanda tangan Pihak Kesatu BA Lingkungan wajib disimpan.';
+        $messages['ttd_ba_lahan_elektronik_kedua.min'] = 'Tanda tangan Pihak Kedua BA Lingkungan wajib disimpan.';
+    }
+    
+    if ($this->ba_lingkungan_option == 'form') {
+        $rules['ttd_ba_lingkungan_elektronik'] = 'required|string|min:100';
+        $rules['ttd_ba_lingkungan_elektronik_kedua'] = 'required|string|min:100';
+        $messages['ttd_ba_lingkungan_elektronik.required'] = 'Tanda tangan Pihak Kesatu BA Lahan wajib diisi.';
+        $messages['ttd_ba_lingkungan_elektronik_kedua.required'] = 'Tanda tangan Pihak Kedua BA Lahan wajib diisi.';
+        $messages['ttd_ba_lingkungan_elektronik.min'] = 'Tanda tangan Pihak Kesatu BA Lahan wajib disimpan.';
+        $messages['ttd_ba_lingkungan_elektronik_kedua.min'] = 'Tanda tangan Pihak Kedua BA Lahan wajib disimpan.';
+    }
+    
+    if (!empty($rules)) {
+        try {
+            $this->validate($rules, $messages);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $this->dispatch('validation-failed');
+            throw $e;
+        }
+    }
+
     Log::info('=== SUBMIT DEBUG ===');
     Log::info('ba_lahan_option: ' . $this->ba_lahan_option);
     Log::info('ba_lingkungan_option: ' . $this->ba_lingkungan_option);
@@ -355,7 +398,9 @@ public function updateLuasTanah()
         // TTD - Placeholder
         $placeholder = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
         $finalTtdBaLahan = $this->ttd_ba_lahan_elektronik ?: $placeholder;
+        $finalTtdBaLahanKedua = $this->ttd_ba_lahan_elektronik_kedua ?: $placeholder;
         $finalTtdBaLingkungan = $this->ttd_ba_lingkungan_elektronik ?: $placeholder;
+        $finalTtdBaLingkunganKedua = $this->ttd_ba_lingkungan_elektronik_kedua ?: $placeholder;
         
         $permohonan = Permohonan::create([
             'user_id' => Auth::id(),
@@ -378,7 +423,9 @@ public function updateLuasTanah()
             'dokumen_imb' => $paths['imb'] ?? null,
             'dokumen_sertifikat_lahan' => $paths['sertifikat_lahan'] ?? null,
             'ttd_ba_lahan' => $finalTtdBaLahan,
+            'ttd_ba_lahan_kedua' => $finalTtdBaLahanKedua,
             'ttd_ba_lingkungan' => $finalTtdBaLingkungan,
+            'ttd_ba_lingkungan_kedua' => $finalTtdBaLingkunganKedua,
             'status' => 'pending',
             'tanggal_upload' => now(),
         ]);

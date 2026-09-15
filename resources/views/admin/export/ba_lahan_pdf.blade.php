@@ -64,6 +64,23 @@
     $tahun_angka = $tanggal_sekarang->format('Y');
     
     $tanggal_lengkap = "$tgl_angka $bulan $tahun_angka";
+    
+    // Auto-fill Manager Name & NIP based on ULP
+    $managers = [
+        'ULP Bandung Selatan' => 'Tedy Mulyadi',
+        'ULP Bandung Barat' => 'Qonia Isnasari',
+        'ULP Bandung Utara' => 'Novan Taufiq Herdiansyah',
+        'ULP Bandung Timur' => 'Puteri Fania Kartikasari',
+        'ULP Cijawura' => 'Wahyudin',
+        'ULP Ujungberung' => 'Hilman Taufik',
+        'ULP Kopo' => 'Syam Agung Nugroho',
+        'ULP Prima Priangan' => 'Aris Fadillah',
+    ];
+    
+    $ulp = $permohonan->ulp ?? ($data['unit_pln'] ?? '');
+    $managerName = $managers[$ulp] ?? '________________________________________';
+    
+    $nipManager = '________________________________________';
 @endphp
 
 <div class="title">
@@ -178,9 +195,15 @@
     <tr>
         <td style="width: 50%;">
             Unit PLN {{ str_replace('ULP ', '', strtoupper($data['unit_pln'] ?? '__________________')) }}
-            <br><br><br><br><br>
-            Nama: ________________________________________<br>
-            NIP: ________________________________________
+            <br>
+            @if($permohonan->ttd_ba_lahan_kedua)
+                <img src="{{ $permohonan->ttd_ba_lahan_kedua }}" class="signature-img">
+            @else
+                <br><br><br><br>
+            @endif
+            <br>
+            Nama: <strong>{{ strtoupper($managerName) }}</strong><br>
+            NIP: {{ $nipManager }}
         </td>
         <td style="width: 50%; padding-left: 160px;">
             <span class="small-italic">

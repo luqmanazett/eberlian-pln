@@ -327,14 +327,14 @@
         <td>
             <strong>PIHAK KEDUA</strong><br>
             YANG MENERIMA
-            <br><br>
-            @if($permohonan->ttd_ba_lingkungan)
-                <br><br><br>
+            <br>
+            @if($permohonan->ttd_ba_lingkungan_kedua)
+                <img src="{{ $permohonan->ttd_ba_lingkungan_kedua }}" class="signature-img">
             @else
                 <br><br><br><br>
             @endif
             <br>
-            <strong>{{ strtoupper($nama_pihak_kedua) }}</strong>
+            <strong><u>{{ strtoupper($nama_pihak_kedua) }}</u></strong>
         </td>
         <td>
             <strong>PIHAK KESATU</strong><br>

@@ -98,10 +98,17 @@
                     </div>
                     
                     {{-- TTD Elektronik --}}
-                    <div class="mt-4 pt-4 border-t">
-                        <label class="text-xs font-medium mb-2 block">Tanda Tangan Ulang <span class="text-red-500">*</span></label>
-                        <iframe src="/canvas-signature.html?id=ba_lahan_elektronik_ulang" style="width: 100%; height: 180px; border: none; border-radius: 8px; background: white;"></iframe>
-                        <input type="hidden" name="ttd_ba_lahan" id="ttd_ba_lahan_elektronik_ulang_input">
+                    <div class="mt-4 pt-4 border-t space-y-4">
+                        <div class="space-y-1">
+                            <label class="text-xs font-medium mb-1 block">Tanda Tangan Pihak Kesatu (Pelanggan) <span class="text-red-500">*</span></label>
+                            <iframe src="/canvas-signature.html?id=ba_lahan_elektronik_ulang" style="width: 100%; height: 180px; border: none; border-radius: 8px; background: white;"></iframe>
+                            <input type="hidden" name="ttd_ba_lahan" id="ttd_ba_lahan_elektronik_ulang_input" required>
+                        </div>
+                        <div class="space-y-1 pt-2 border-t border-dashed">
+                            <label class="text-xs font-medium mb-1 block">Tanda Tangan Pihak Kedua (PLN) <span class="text-red-500">*</span></label>
+                            <iframe src="/canvas-signature.html?id=ba_lahan_elektronik_ulang_kedua" style="width: 100%; height: 180px; border: none; border-radius: 8px; background: white;"></iframe>
+                            <input type="hidden" name="ttd_ba_lahan_kedua" id="ttd_ba_lahan_elektronik_ulang_kedua_input" required>
+                        </div>
                     </div>
                 </div>
             @endif
@@ -167,10 +174,17 @@
                     </div>
                     
                     {{-- TTD Elektronik --}}
-                    <div class="mt-4 pt-4 border-t">
-                        <label class="text-xs font-medium mb-2 block">Tanda Tangan Ulang <span class="text-red-500">*</span></label>
-                        <iframe src="/canvas-signature.html?id=ba_lingkungan_elektronik_ulang" style="width: 100%; height: 180px; border: none; border-radius: 8px; background: white;"></iframe>
-                        <input type="hidden" name="ttd_ba_lingkungan" id="ttd_ba_lingkungan_elektronik_ulang_input">
+                    <div class="mt-4 pt-4 border-t space-y-4">
+                        <div class="space-y-1">
+                            <label class="text-xs font-medium mb-1 block">Tanda Tangan Pihak Kesatu (Pelanggan) <span class="text-red-500">*</span></label>
+                            <iframe src="/canvas-signature.html?id=ba_lingkungan_elektronik_ulang" style="width: 100%; height: 180px; border: none; border-radius: 8px; background: white;"></iframe>
+                            <input type="hidden" name="ttd_ba_lingkungan" id="ttd_ba_lingkungan_elektronik_ulang_input" required>
+                        </div>
+                        <div class="space-y-1 pt-2 border-t border-dashed">
+                            <label class="text-xs font-medium mb-1 block">Tanda Tangan Pihak Kedua (PLN) <span class="text-red-500">*</span></label>
+                            <iframe src="/canvas-signature.html?id=ba_lingkungan_elektronik_ulang_kedua" style="width: 100%; height: 180px; border: none; border-radius: 8px; background: white;"></iframe>
+                            <input type="hidden" name="ttd_ba_lingkungan_kedua" id="ttd_ba_lingkungan_elektronik_ulang_kedua_input" required>
+                        </div>
                     </div>
                 </div>
             @endif

@@ -175,15 +175,27 @@
         <div style="margin-top: 20px;">
             @if($p->ba_lahan_type == 'form' && $p->ttd_ba_lahan)
             <div class="ttd-box">
-                <img src="{{ $p->ttd_ba_lahan }}" alt="TTD BA Lahan">
-                <p>Tanda Tangan BA Lahan</p>
+                <img src="{{ $p->ttd_ba_lahan }}" alt="TTD BA Lahan P1">
+                <p>TTD BA Lahan (Pihak Kesatu)</p>
+            </div>
+            @endif
+            @if($p->ba_lahan_type == 'form' && $p->ttd_ba_lahan_kedua)
+            <div class="ttd-box">
+                <img src="{{ $p->ttd_ba_lahan_kedua }}" alt="TTD BA Lahan P2">
+                <p>TTD BA Lahan (Pihak Kedua)</p>
             </div>
             @endif
             
             @if($p->ba_lingkungan_type == 'form' && $p->ttd_ba_lingkungan)
             <div class="ttd-box">
-                <img src="{{ $p->ttd_ba_lingkungan }}" alt="TTD BA Lingkungan">
-                <p>Tanda Tangan BA Lingkungan</p>
+                <img src="{{ $p->ttd_ba_lingkungan }}" alt="TTD BA Lingkungan P1">
+                <p>TTD BA Lingkungan (Pihak Kesatu)</p>
+            </div>
+            @endif
+            @if($p->ba_lingkungan_type == 'form' && $p->ttd_ba_lingkungan_kedua)
+            <div class="ttd-box">
+                <img src="{{ $p->ttd_ba_lingkungan_kedua }}" alt="TTD BA Lingkungan P2">
+                <p>TTD BA Lingkungan (Pihak Kedua)</p>
             </div>
             @endif
         </div>
